@@ -1,7 +1,7 @@
 {
     "name": "tonybogdanov/magic-services-bundle",
     "description": "Auto-magic service definition generator for Symfony 4.0+",
-    "type": "library",
+    "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
         {
@@ -11,7 +11,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "TonyBogdanov\\": "src/TonyBogdanov"
+            "TonyBogdanov\\MagicServices\\": "src/TonyBogdanov/MagicServices/"
         }
     },
     "require": {
