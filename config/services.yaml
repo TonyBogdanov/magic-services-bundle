@@ -1,0 +1,30 @@
+services:
+    magic_services.config:
+        class: TonyBogdanov\MagicServices\DependencyInjection\Config
+        calls:
+            - [ 'setParametersRegex', [ '%magic_services.parameters_regex%' ] ]
+            - [ 'setConfigPath', [ '%magic_services.config_path%' ] ]
+            - [ 'setAwarePath', [ '%magic_services.aware_path%' ] ]
+            - [ 'setAwareNamespace', [ '%magic_services.aware_namespace%' ] ]
+
+    magic_services.generator:
+        class: TonyBogdanov\MagicServices\Util\Generator
+
+    magic_services.inspector.parameter:
+        class: TonyBogdanov\MagicServices\Inspector\ParameterInspector
+        arguments:
+            - '@Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface'
+            - '@magic_services.config'
+
+    magic_services.commands.parameters.dump:
+        class: TonyBogdanov\MagicServices\Command\Services\Parameters\Dump
+        tags: [ 'console.command' ]
+        arguments:
+            - '@magic_services.inspector.parameter'
+
+    magic_services.commands.parameters.generate:
+        class: TonyBogdanov\MagicServices\Command\Services\Parameters\Generate
+        tags: [ 'console.command' ]
+        arguments:
+            - '@magic_services.generator'
+            - '@magic_services.inspector.parameter'
