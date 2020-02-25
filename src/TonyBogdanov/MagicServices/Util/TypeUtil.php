@@ -17,8 +17,6 @@ namespace TonyBogdanov\MagicServices\Util;
 class TypeUtil {
 
     /**
-     * @see https://github.com/nette/php-generator/issues/57
-     *
      * @param string $type
      * @param bool $short
      *
@@ -26,25 +24,14 @@ class TypeUtil {
      */
     public static function normalize( string $type, bool $short = false ): string {
 
-        switch ( $type ) {
+        if ( $short ) {
 
-            case 'integer':
-                return 'int';
-
-            case 'boolean':
-                return 'bool';
-
-            default:
-                if ( $short ) {
-
-                    $parts = explode( '\\', $type );
-                    return $parts[ count( $parts ) - 1 ];
-
-                }
-
-                return $type;
+            $parts = explode( '\\', $type );
+            return $parts[ count( $parts ) - 1 ];
 
         }
+
+        return $type;
 
     }
 

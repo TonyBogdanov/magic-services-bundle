@@ -18,6 +18,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use TonyBogdanov\MagicServices\Aware\ServiceAwareInterface;
 use TonyBogdanov\MagicServices\Object\DependencyObject;
 use TonyBogdanov\MagicServices\Object\InterfaceObject;
+use TonyBogdanov\MagicServices\Object\TraitObject;
 
 /**
  * Class Generator
@@ -49,7 +50,7 @@ class Generator {
 
         }
 
-        $method->setComment( "@return " . TypeUtil::normalize( $dependency->getType() ) );
+        $method->setComment( "@return " . TypeUtil::normalize( $dependency->getType(), true ) );
 
         $method->setPublic();
         $method->setReturnType( TypeUtil::normalize( $dependency->getType() ) );
@@ -89,8 +90,8 @@ class Generator {
 
         $method->setComment(
 
-            "@param " . TypeUtil::normalize( $dependency->getType() ) . " \$" . $dependency->getName() . "\n\n" .
-            "@return \$this;"
+            "@param " . TypeUtil::normalize( $dependency->getType(), true ) . " \$" . $dependency->getName() . "\n\n" .
+            "@return \$this"
 
         );
 
@@ -156,6 +157,52 @@ class Generator {
     }
 
     /**
+     * @param TraitObject $trait
+     * @param PhpNamespace $namespace
+     * @param ClassType $class
+     *
+     * @return $this
+     */
+    protected function dumpTraitClass( TraitObject $trait, PhpNamespace $namespace, ClassType $class ) {
+
+        $class->setComment(
+
+            "Trait " . $trait->getBaseClassName() . "\n\n" .
+            "@package " . $trait->getNamespaceName()
+
+        );
+
+        $class->setTrait();
+
+        $class
+            ->addProperty( $trait->getDependency()->getName() )
+            ->setProtected()
+            ->setComment( "@var " . TypeUtil::normalize( $trait->getDependency()->getType(), true ) )
+        ;
+
+        $this->dumpGetter(
+
+            $trait->getDependency(),
+            $namespace,
+            $class->addMethod( 'get' . ucfirst( $trait->getDependency()->getName() ) ),
+            true
+
+        );
+
+        $this->dumpSetter(
+
+            $trait->getDependency(),
+            $namespace,
+            $class->addMethod( 'set' . ucfirst( $trait->getDependency()->getName() ) ),
+            true
+
+        );
+
+        return $this;
+
+    }
+
+    /**
      * @param InterfaceObject $interface
      *
      * @return $this
@@ -168,6 +215,23 @@ class Generator {
         $this->dumpInterfaceClass( $interface, $namespace, $namespace->addClass( $interface->getBaseClassName() ) );
 
         ( new Filesystem() )->dumpFile( $interface->getPath(), ( new PsrPrinter() )->printFile( $file ) );
+        return $this;
+
+    }
+
+    /**
+     * @param TraitObject $trait
+     *
+     * @return $this
+     */
+    public function dumpTrait( TraitObject $trait ) {
+
+        $file = new PhpFile();
+        $namespace = $file->addNamespace( $trait->getNamespaceName() );
+
+        $this->dumpTraitClass( $trait, $namespace, $namespace->addClass( $trait->getBaseClassName() ) );
+
+        ( new Filesystem() )->dumpFile( $trait->getPath(), ( new PsrPrinter() )->printFile( $file ) );
         return $this;
 
     }

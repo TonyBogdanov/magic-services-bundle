@@ -32,7 +32,7 @@ class Dump extends Command {
     protected function configure() {
 
         $this->setDescription( "Dumps a list of container parameters matching the configured" .
-            " magic_services.parameters regular expression." );
+            " magic_services.parameters regular expressions." );
 
     }
 
@@ -46,15 +46,15 @@ class Dump extends Command {
 
         $ui = new SymfonyStyle( $input, $output );
 
-        if ( ! $this->parameterInspector->hasRegex() ) {
+        if ( ! $this->parameterInspector->canFindParameters() ) {
 
-            $ui->error( "The magic_services.parameters configuration option is NULL and therefore no parameters" .
+            $ui->error( "The magic_services.parameters configuration option is empty and therefore no parameters" .
                 " can be detected." );
             return;
 
         }
 
-        $parameters = $this->parameterInspector->getParameters();
+        $parameters = $this->parameterInspector->resolveParameters();
         if ( 0 === count( $parameters ) ) {
 
             $ui->error( "The magic_services.parameters configuration option doesn't match any parameters." );
@@ -72,7 +72,7 @@ class Dump extends Command {
         ], array_map( function ( ParameterObject $parameter ): array {
 
             $exists = interface_exists( $parameter->getInterface()->getClassName() );
-            $valid = InterfaceObject::createFromReflection(
+            $valid = $exists && InterfaceObject::createFromReflection(
 
                 $parameter->getConfig(),
                 new \ReflectionClass( $parameter->getInterface()->getClassName() )
@@ -82,7 +82,7 @@ class Dump extends Command {
             return [
 
                 $parameter->getName(),
-                $parameter->getInterface()->getName(),
+                $parameter->getInterface()->getName() . '\\' . $parameter->getInterface()->getBaseClassName(),
 
                 $exists ? '<info>YES</info>' : '<fg=red>NO</>',
                 $valid ? '<info>YES</info>' : '<fg=red>NO</>',

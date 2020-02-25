@@ -34,10 +34,11 @@ class MagicServicesExtension extends Extension {
         $loader = new YamlFileLoader( $container, new FileLocator( __DIR__ . '/../../../../config' ) );
         $loader->load( 'services.yaml' );
 
-        $container->setParameter( 'magic_services.parameters_regex', $config['parameters_regex'] );
-        $container->setParameter( 'magic_services.config_path', $config['config_path'] );
         $container->setParameter( 'magic_services.aware_path', $config['aware_path'] );
         $container->setParameter( 'magic_services.aware_namespace', $config['aware_namespace'] );
+        $container->setParameter( 'magic_services.config_path', $config['config_path'] );
+        $container->setParameter( 'magic_services.parameters', $config['parameters'] );
+        $container->setParameter( 'magic_services.interfaces', $config['interfaces'] );
 
     }
 

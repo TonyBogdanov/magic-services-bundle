@@ -50,15 +50,15 @@ class Generate extends Command {
 
         $ui = new SymfonyStyle( $input, $output );
 
-        if ( ! $this->parameterInspector->hasRegex() ) {
+        if ( ! $this->parameterInspector->canFindParameters() ) {
 
-            $ui->error( "The magic_services.parameters configuration option is NULL and therefore no parameters" .
+            $ui->error( "The magic_services.parameters configuration option is empty and therefore no parameters" .
                 " can be detected." );
             return;
 
         }
 
-        $parameters = $this->parameterInspector->getParameters();
+        $parameters = $this->parameterInspector->resolveParameters();
         if ( 0 === count( $parameters ) ) {
 
             $ui->error( "The magic_services.parameters configuration option doesn't match any parameters." );

@@ -46,18 +46,18 @@ class ParameterInspector {
     /**
      * @return bool
      */
-    public function hasRegex(): bool {
+    public function canFindParameters(): bool {
 
-        return ! is_null( $this->config->getParametersRegex() );
+        return 0 < count( $this->config->getParameters() );
 
     }
 
     /**
      * @return ParameterObject[]
      */
-    public function getParameters(): array {
+    public function resolveParameters(): array {
 
-        if ( ! $this->hasRegex() ) {
+        if ( ! $this->canFindParameters() ) {
 
             return [];
 
@@ -67,7 +67,20 @@ class ParameterInspector {
 
         foreach ( $this->bag->all() as $name => $value ) {
 
-            if ( ! preg_match( $this->config->getParametersRegex(), $name ) ) {
+            $found = false;
+
+            foreach ( $this->config->getParameters() as $regex ) {
+
+                if ( preg_match( $regex, $name ) ) {
+
+                    $found = true;
+                    break;
+
+                }
+
+            }
+
+            if ( ! $found ) {
 
                 continue;
 
@@ -80,7 +93,7 @@ class ParameterInspector {
 
             }
 
-            $parameters[ $name ] = $parameter;
+            $parameters[] = $parameter;
 
         }
 

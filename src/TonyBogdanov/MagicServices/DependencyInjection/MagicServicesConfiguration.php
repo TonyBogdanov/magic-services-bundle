@@ -32,8 +32,19 @@ class MagicServicesConfiguration implements ConfigurationInterface {
         $root = $rootNode->children();
 
         $root
-            ->scalarNode( 'parameters_regex' )
-                ->defaultNull()
+            ->scalarNode( 'aware_path' )
+                ->isRequired()
+                ->cannotBeEmpty()
+
+                ->validate()
+                    ->ifTrue( function ( $value ) { return ! is_string( $value ); } )
+                    ->thenInvalid( 'Value must be a string.' )
+                ->end()
+            ->end()
+
+            ->scalarNode( 'aware_namespace' )
+                ->isRequired()
+                ->cannotBeEmpty()
 
                 ->validate()
                     ->ifTrue( function ( $value ) { return ! is_string( $value ); } )
@@ -55,23 +66,25 @@ class MagicServicesConfiguration implements ConfigurationInterface {
                 ->end()
             ->end()
 
-            ->scalarNode( 'aware_path' )
-                ->isRequired()
-                ->cannotBeEmpty()
+            ->arrayNode( 'parameters' )
+                ->defaultValue( [] )
+                ->scalarPrototype( 'string' )
 
-                ->validate()
-                    ->ifTrue( function ( $value ) { return ! is_string( $value ); } )
-                    ->thenInvalid( 'Value must be a string.' )
+                    ->validate()
+                        ->ifTrue( function ( $value ) { return ! is_string( $value ); } )
+                        ->thenInvalid( 'Value must be a string.' )
+                    ->end()
                 ->end()
             ->end()
 
-            ->scalarNode( 'aware_namespace' )
-                ->isRequired()
-                ->cannotBeEmpty()
+            ->arrayNode( 'interfaces' )
+                ->defaultValue( [] )
+                ->scalarPrototype( 'string' )
 
-                ->validate()
-                    ->ifTrue( function ( $value ) { return ! is_string( $value ); } )
-                    ->thenInvalid( 'Value must be a string.' )
+                    ->validate()
+                        ->ifTrue( function ( $value ) { return ! is_string( $value ); } )
+                        ->thenInvalid( 'Value must be a string.' )
+                    ->end()
                 ->end()
             ->end();
 

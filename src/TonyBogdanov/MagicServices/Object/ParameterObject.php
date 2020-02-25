@@ -44,11 +44,6 @@ class ParameterObject {
     protected $interface;
 
     /**
-     * @var TraitObject
-     */
-    protected $trait;
-
-    /**
      * @param Config $config
      * @param string $name
      * @param $value
@@ -179,27 +174,6 @@ class ParameterObject {
         }
 
         return $this->interface;
-
-    }
-
-    /**
-     * @return TraitObject
-     */
-    public function getTrait(): TraitObject {
-
-        if ( ! isset( $this->trait ) ) {
-
-            $this->trait = TraitObject::createFromName(
-
-                $this->getConfig(),
-                $this->getDependency(),
-                'parameter' . ucfirst( $this->getName() )
-
-            );
-
-        }
-
-        return $this->trait;
 
     }
 

@@ -9,6 +9,7 @@
 
 namespace TonyBogdanov\MagicServices\Object;
 
+use Nette\PhpGenerator\Type;
 use TonyBogdanov\MagicServices\DependencyInjection\Config;
 use TonyBogdanov\MagicServices\Util\TypeUtil;
 
@@ -54,7 +55,7 @@ class DependencyObject {
 
             $config,
             $name,
-            $primitive ? gettype( $value ) : get_class( $value ),
+            $primitive ? Type::getType( $value ) : get_class( $value ),
             $primitive
 
         );
@@ -77,6 +78,15 @@ class DependencyObject {
         bool $primitive
 
     ): DependencyObject {
+
+        $parts = explode( '\\', $name );
+
+        if ( 0 < count( $parts ) ) {
+
+            $name = array_pop( $parts );
+            $name = preg_replace( '/Interface$/', '', $name );
+
+        }
 
         $name = str_replace( ' ', '_', ucwords( str_replace( '_', ' ', $name ) ) );
         $name = str_replace( ' ', '', ucwords( str_replace( '.', ' ', $name ) ) );

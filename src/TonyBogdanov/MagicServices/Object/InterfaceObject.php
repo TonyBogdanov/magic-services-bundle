@@ -34,6 +34,11 @@ class InterfaceObject {
     protected $name;
 
     /**
+     * @var TraitObject
+     */
+    protected $trait;
+
+    /**
      * @param Config $config
      * @param DependencyObject $dependency
      * @param string $name
@@ -47,6 +52,15 @@ class InterfaceObject {
         string $name
 
     ): InterfaceObject {
+
+        $parts = explode( '\\', $name );
+
+        if ( 0 < count( $parts ) ) {
+
+            $name = array_pop( $parts );
+            $name = preg_replace( '/Interface$/', '', $name );
+
+        }
 
         $name = str_replace( ' ', '_', ucwords( str_replace( '_', ' ', $name ) ) );
         $name = str_replace( ' ', '', ucwords( str_replace( '.', ' ', $name ) ) );
@@ -277,6 +291,27 @@ class InterfaceObject {
             $this->getConfig()->getAwarePath() . DIRECTORY_SEPARATOR .
             $this->getName() . DIRECTORY_SEPARATOR .
             $this->getName() . 'AwareInterface.php';
+
+    }
+
+    /**
+     * @return TraitObject
+     */
+    public function getTrait(): TraitObject {
+
+        if ( ! isset( $this->trait ) ) {
+
+            $this->trait = TraitObject::createFromName(
+
+                $this->getConfig(),
+                $this->getDependency(),
+                $this->getName()
+
+            );
+
+        }
+
+        return $this->trait;
 
     }
 

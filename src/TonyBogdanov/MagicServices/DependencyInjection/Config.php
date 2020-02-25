@@ -17,16 +17,6 @@ namespace TonyBogdanov\MagicServices\DependencyInjection;
 class Config {
 
     /**
-     * @var string|null
-     */
-    protected $parametersRegex;
-
-    /**
-     * @var string
-     */
-    protected $configPath;
-
-    /**
      * @var string
      */
     protected $awarePath;
@@ -37,46 +27,19 @@ class Config {
     protected $awareNamespace;
 
     /**
-     * @return string|null
+     * @var string
      */
-    public function getParametersRegex(): ?string {
-
-        return $this->parametersRegex;
-
-    }
+    protected $configPath;
 
     /**
-     * @param string|null $parametersRegex
-     *
-     * @return Config
+     * @var string[]
      */
-    public function setParametersRegex( string $parametersRegex = null ): Config {
-
-        $this->parametersRegex = $parametersRegex;
-        return $this;
-
-    }
+    protected $parameters = [];
 
     /**
-     * @return string
+     * @var string[]
      */
-    public function getConfigPath(): string {
-
-        return $this->configPath;
-
-    }
-
-    /**
-     * @param string $configPath
-     *
-     * @return Config
-     */
-    public function setConfigPath( string $configPath ): Config {
-
-        $this->configPath = $configPath;
-        return $this;
-
-    }
+    protected $interfaces = [];
 
     /**
      * @return string
@@ -116,6 +79,69 @@ class Config {
     public function setAwareNamespace( string $awareNamespace ): Config {
 
         $this->awareNamespace = $awareNamespace;
+        return $this;
+
+    }
+
+    /**
+     * @return string
+     */
+    public function getConfigPath(): string {
+
+        return $this->configPath;
+
+    }
+
+    /**
+     * @param string $configPath
+     *
+     * @return Config
+     */
+    public function setConfigPath( string $configPath ): Config {
+
+        $this->configPath = $configPath;
+        return $this;
+
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getParameters(): array {
+
+        return $this->parameters;
+
+    }
+
+    /**
+     * @param string[] $parameters
+     *
+     * @return Config
+     */
+    public function setParameters( array $parameters ): Config {
+
+        $this->parameters = $parameters;
+        return $this;
+
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getInterfaces(): array {
+
+        return $this->interfaces;
+
+    }
+
+    /**
+     * @param string[] $interfaces
+     *
+     * @return Config
+     */
+    public function setInterfaces( array $interfaces ): Config {
+
+        $this->interfaces = $interfaces;
         return $this;
 
     }
