@@ -136,37 +136,24 @@ setAnnotationReader( \Doctrine\Common\Annotations\Reader $annotationReader );
 
 ## Commands
 
-`services:parameters:dump`
+`services:aware:dump`
 
-Dumps a table of all container parameters matching the configured `parameters`
-expressions, along with the name of the *aware* interface that would be generated per
-each. Additionally displays whether the interface already exists and if its structure
-is valid, i.e. would not be changed if re-generated.
+Dumps a table of resources to have *aware* interfaces & traits generated for them,
+depending on the configured parameters in `magic_services.aware.parameters` and
+services in `magic_services.aware.services`.
 
-`services:parameters:generate`
+Use `--parameters` or `-p` to dump parameters.\
+Use `--services` or `-s` to dump services.\
+Use `-ps` to dump both.
 
-Generates *aware* interfaces for container parameters matching the configuration.
-Interface files will be saved under `aware_path`. Use `services:parameters:dump` to
-review the parameters before generating.
+`services:aware:generate`
 
-`services:interfaces:dump`
+Generates *aware* interfaces and traits for parameters & services as discovered &
+described in `services:aware:dump`.
 
-Dumps a table of all classes / interfaces matching the configured `interfaces` names /
-patterns, along with the name of the *aware* interface that would be generated per
-each. Additionally displays whether the interface already exists and if its structure
-is valid, i.e. would not be changed if re-generated.
-
-`services:traits:generate`
-
-Generates *aware* traits for all currently generated *aware* interfaces.\
-Keep in mind that this command will scan **all** available *aware* interface files
-and generate corresponding trait files for them. If you have obsolete or invalid
-interface files, you will need to clean them yourself first.
-
-`services:definitions:dump`
-
-Dumps a table of service definitions matching the configured `services` names /
-patterns.
+Use `--parameters` or `-p` to generate parameters.\
+Use `--services` or `-s` to generate services.\
+Use `-ps` to dump both.
 
 ## Annotations
 
