@@ -17,6 +17,8 @@ Example:
 magic_services:
   definitions:
     path: '%kernel.project_dir%/config/magic_services.yaml'
+    services:
+      - '%kernel.project_dir%/src'
   aware:
     path: '%kernel.project_dir%/src/DependencyInjection/Aware'
     namespace: 'App\DependencyInjection\Aware'
@@ -43,10 +45,26 @@ stored (must end with `.yml` or `.yaml`).
 Definitions dumped here will be loaded automatically by the bundle, no need to do it
 yourself.
 
+Defaults to: `'%kernel.project_dir%/config/magic_services.yaml'`.
+
+---
+
+`definitions.services`
+
+An array of folders to scan when looking up magic service classes.
+
+Defaults to: `[ '%kernel.project_dir%/src' ]`
+
+---
+
 `aware.path`
 
 Path to the folder where *aware* interfaces and traits will be generated. It should be
 part of your package so that composer can autoload the files.
+
+Defaults to: `'%kernel.project_dir%/src/DependencyInjection/Aware'`
+
+---
 
 `aware.namespace`
 
@@ -57,16 +75,28 @@ The final class name of an *aware* interface with the name `FontManager` and
 configured namespace `App\DependencyInjection\Aware` will be
 `App\DependencyInjection\Aware\FontManager\FontManagerAwareInterface`.
 
+Defaults to: `'App\DependencyInjection\Aware'`
+
+---
+
 `aware.parameters`
 
 An array of definitions for generating *aware* interfaces from container parameters.
 Each entry must be an array, or when automatic generation of optional settings is
 sufficient, you can also use a string (will be used as the `regex` sub-setting).
 
+Defaults to: `[]`
+
+---
+
 `aware.parameters.*.regex`
 
 A regular expression for matching one or more parameters defined in the container, to
 generate *aware* interfaces for.
+
+Required, no default.
+
+---
 
 `aware.parameters.*.name`
 
@@ -83,16 +113,26 @@ For example, for the `kernel.project_dir` parameter, the following name will be 
 
 The **final** *aware* name will be normalized (see Normalization).
 
+---
+
 `aware.services`
 
 An array of definitions for generating *aware* interfaces from services.
 Each entry must be an array, or when automatic generation of optional settings is
 sufficient, you can also use a string (will be used as the `type` sub-setting).
 
+Defaults to: `[]`
+
+---
+
 `aware.services.*.type`
 
 The type of the object an *aware* interface is being generated for. This should be a
 full class or interface name.
+
+Required, no default.
+
+---
 
 `aware.services.*.service`
 
@@ -101,6 +141,8 @@ injection.
 
 If this is omitted, a service with the name of the configured type will be assumed.
 This is useful when using a magic service, or an interface.
+
+---
 
 `aware.services.*.name`
 
@@ -146,6 +188,8 @@ Use `--parameters` or `-p` to dump parameters.\
 Use `--services` or `-s` to dump services.\
 Use `-ps` to dump both.
 
+---
+
 `services:aware:generate`
 
 Generates *aware* interfaces and traits for parameters & services as discovered &
@@ -154,6 +198,24 @@ described in `services:aware:dump`.
 Use `--parameters` or `-p` to generate parameters.\
 Use `--services` or `-s` to generate services.\
 Use `-ps` to dump both.
+
+---
+
+`services:definitions:dump`
+
+Dumps a table of detected magic services depending on the configured paths in
+`magic_services.definitions.services`.
+
+Use `--previews` or `-p` to preview the to be generated definitions.
+
+---
+
+`services:definitions:generate`
+
+Generates service definitions for services as discovered & described in
+`services:definitions:dump`.
+
+Dumps the definitions in the path specified by `magic_services.definitions.path`.
 
 ## Annotations
 
@@ -166,13 +228,35 @@ add the annotation.
 
 The annotation, however, allows you to further customize the generated definition:
 
-`@MagicService(public=true)`
+---
 
-This will mark the generated service as [public](https://symfony.com/doc/current/service_container.html#public-versus-private-services).
+`@MagicService(ignore=true)`
+
+This will mark the inspected class as ignored by the magic services definition
+generator.
+
+This could be useful when you need to write the definition yourself, but the
+class still implements the ServiceAwareInterface (or uses *aware* interfaces)
+and thus is considered for generation.
+
+---
+
+`@MagicService(setters=false)`
+
+This will mark the service as not supporting magic setters and that it must have
+all of its dependencies injected as constructor arguments instead.
+
+---
 
 `@MagicService(tags={"console.command","another_tag"}`
 
 This allows you to specify [tags](https://symfony.com/doc/current/service_container/tags.html) for the service.
+
+---
+
+`@MagicService(public=true)`
+
+This will mark the generated service as [public](https://symfony.com/doc/current/service_container.html#public-versus-private-services).
 
 ## Normalization
 

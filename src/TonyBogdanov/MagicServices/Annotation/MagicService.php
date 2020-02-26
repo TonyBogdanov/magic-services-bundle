@@ -19,11 +19,22 @@ namespace TonyBogdanov\MagicServices\Annotation;
 class MagicService {
 
     /**
-     * Set this to TRUE to define the service as public.
+     * Set this to TRUE to define that the inspected service must be ignored by the magic services definition generator.
+     *
+     * This could be useful when you need to write the definition yourself, but the class still implements the
+     * ServiceAwareInterface (or uses aware interfaces) and thus is considered for generation.
      *
      * @var bool
      */
-    public $public = false;
+    public $ignore = false;
+
+    /**
+     * Set this to FALSE to define that the inspected service does not support magic setters and must have all of its
+     * dependencies injected as constructor arguments instead.
+     *
+     * @var bool
+     */
+    public $setters = true;
 
     /**
      * Define a list of service tags.
@@ -31,5 +42,12 @@ class MagicService {
      * @var array
      */
     public $tags = [];
+
+    /**
+     * Set this to TRUE to define the service as public.
+     *
+     * @var bool
+     */
+    public $public = false;
 
 }

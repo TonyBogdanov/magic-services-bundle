@@ -44,6 +44,10 @@ class MagicServicesConfiguration implements ConfigurationInterface {
                             ->thenInvalid( $stringError )
                         ->end()
                     ->end()
+                    ->arrayNode( 'services' )
+                        ->defaultValue( [ '%kernel.project_dir%/src' ] )
+                        ->scalarPrototype()
+                    ->end()
                 ->end()
             ->end();
 

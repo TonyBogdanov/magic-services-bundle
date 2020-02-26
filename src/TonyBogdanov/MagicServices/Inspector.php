@@ -9,9 +9,14 @@
 
 namespace TonyBogdanov\MagicServices;
 
+use Doctrine\Common\Annotations\Reader;
 use Nette\PhpGenerator\Type;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use TonyBogdanov\MagicServices\Annotation\MagicService;
+use TonyBogdanov\MagicServices\Aware\ServiceAwareInterface;
 use TonyBogdanov\MagicServices\Object\AwareObject;
+use TonyBogdanov\MagicServices\Object\DefinitionObject;
+use TonyBogdanov\MagicServices\Util\ClassFinder;
 use TonyBogdanov\MagicServices\Util\Normalizer;
 
 /**
@@ -22,6 +27,11 @@ use TonyBogdanov\MagicServices\Util\Normalizer;
 class Inspector {
 
     /**
+     * @var Reader
+     */
+    protected $annotationReader;
+
+    /**
      * @var ParameterBagInterface
      */
     protected $parameterBag;
@@ -29,37 +39,80 @@ class Inspector {
     /**
      * @var string[]
      */
-    protected $parameters;
+    protected $awareParameters;
 
     /**
      * @var string[]
      */
-    protected $services;
+    protected $awareServices;
+
+    /**
+     * @var string[]
+     */
+    protected $definitions;
+
+    /**
+     * @param \ReflectionClass $reflection
+     *
+     * @return MagicService|null
+     */
+    protected function resolveAnnotation( \ReflectionClass $reflection ): ?MagicService {
+
+        /** @var MagicService $annotation */
+        $annotation = $this->annotationReader->getClassAnnotation( $reflection, MagicService::class );
+        if ( $annotation ) {
+
+            return $annotation;
+
+        }
+
+        if ( $reflection->getParentClass() ) {
+
+            return $this->resolveAnnotation( $reflection->getParentClass() );
+
+        }
+
+        return null;
+
+    }
 
     /**
      * Inspector constructor.
      *
+     * @param Reader $annotationReader
      * @param ParameterBagInterface $parameterBag
-     * @param array $parameters
-     * @param array $services
+     * @param array $awareParameters
+     * @param array $awareServices
+     * @param array $definitions
      */
-    public function __construct( ParameterBagInterface $parameterBag, array $parameters, array $services ) {
+    public function __construct(
 
+        Reader $annotationReader,
+        ParameterBagInterface $parameterBag,
+        array $awareParameters,
+        array $awareServices,
+        array $definitions
+
+    ) {
+
+        $this->annotationReader = $annotationReader;
         $this->parameterBag = $parameterBag;
 
-        $this->parameters = $parameters;
-        $this->services = $services;
+        $this->awareParameters = $awareParameters;
+        $this->awareServices = $awareServices;
+
+        $this->definitions = $definitions;
 
     }
 
     /**
      * @return AwareObject[]
      */
-    public function resolveParameters(): array {
+    public function resolveAwareParameters(): array {
 
         $objects = [];
 
-        foreach ( $this->parameters as $parameter ) {
+        foreach ( $this->awareParameters as $parameter ) {
 
             $matchRegex = $parameter['regex'];
             $matchName = $parameter['name'] ?? 'Parameter$0';
@@ -111,11 +164,11 @@ class Inspector {
     /**
      * @return AwareObject[]
      */
-    public function resolveServices(): array {
+    public function resolveAwareServices(): array {
 
         $objects = [];
 
-        foreach ( $this->services as $service ) {
+        foreach ( $this->awareServices as $service ) {
 
             $definitionType = $service['type'];
             $definitionService = $service['service'] ?? '@' . $definitionType;
@@ -138,6 +191,47 @@ class Inspector {
         } );
 
         return $objects;
+
+    }
+
+    /**
+     * @param bool $includeIgnores
+     *
+     * @return DefinitionObject[]
+     * @throws \ReflectionException
+     */
+    public function resolveDefinitions( bool $includeIgnores = true ): array {
+
+        $definitions = [];
+
+        foreach ( ClassFinder::findClasses( $this->definitions ) as $class ) {
+
+            $reflection = new \ReflectionClass( $class );
+            if ( $reflection->isAbstract() ) {
+
+                continue;
+
+            }
+
+            /** @var MagicService|null $annotation */
+            $annotation = $this->resolveAnnotation( $reflection );
+            if ( ! $reflection->implementsInterface( ServiceAwareInterface::class ) && ! $annotation ) {
+
+                continue;
+
+            }
+
+            if ( ! $includeIgnores && $annotation && $annotation->ignore ) {
+
+                continue;
+
+            }
+
+            $definitions[] = new DefinitionObject( $reflection, $annotation );
+
+        }
+
+        return $definitions;
 
     }
 

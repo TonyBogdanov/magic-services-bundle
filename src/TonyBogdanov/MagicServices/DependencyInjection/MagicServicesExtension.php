@@ -43,6 +43,13 @@ class MagicServicesExtension extends Extension {
 
         $container->setParameter(
 
+            'magic_services.definitions.services',
+            isset( $config['definitions'] ) ? ( $config['definitions']['services'] ?? [] ) : []
+
+        );
+
+        $container->setParameter(
+
             'magic_services.aware.path',
             isset( $config['aware'] ) ? ( $config['aware']['path'] ?? null ) : null
 

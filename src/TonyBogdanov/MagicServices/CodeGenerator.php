@@ -11,6 +11,7 @@ namespace TonyBogdanov\MagicServices;
 
 use Nette\PhpGenerator\PhpFile;
 use TonyBogdanov\MagicServices\Aware\ServiceAwareInterface;
+use TonyBogdanov\MagicServices\Util\Normalizer;
 
 /**
  * Class CodeGenerator
@@ -67,8 +68,8 @@ class CodeGenerator {
         } else {
 
             $class
-                ->addProperty( lcfirst( $name ) )
-                ->addComment( '@var ' . $baseType . ' $' . lcfirst( $name ) )
+                ->addProperty( Normalizer::normalizeParameterName( $name ) )
+                ->addComment( '@var ' . $baseType . ' $' . Normalizer::normalizeParameterName( $name ) )
                 ->setProtected();
 
         }
@@ -81,23 +82,24 @@ class CodeGenerator {
 
         if ( ! $interface ) {
 
-            $getter->setBody( 'return $this->' . lcfirst( $name ) . ';' );
+            $getter->setBody( 'return $this->' . Normalizer::normalizeParameterName( $name ) . ';' );
 
         }
 
         $setter = $class
             ->addMethod( 'set' . $name )
-            ->addComment( '@param ' . $baseType . ' $' . lcfirst( $name ) )
+            ->addComment( '@param ' . $baseType . ' $' . Normalizer::normalizeParameterName( $name ) )
             ->addComment( "\n" . '@return $this' )
             ->setPublic();
 
-        $setter->addParameter( lcfirst( $name ) )->setType( $type );
+        $setter->addParameter( Normalizer::normalizeParameterName( $name ) )->setType( $type );
 
         if ( ! $interface ) {
 
             $setter->setBody(
 
-                '$this->' . lcfirst( $name ) . ' = $' . lcfirst( $name ) . ';' . "\n" .
+                '$this->' . Normalizer::normalizeParameterName( $name ) . ' = $' .
+                Normalizer::normalizeParameterName( $name ) . ';' . "\n" .
                 'return $this;'
 
             );

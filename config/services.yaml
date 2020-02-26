@@ -2,9 +2,11 @@ services:
     magic_services.inspector:
         class: TonyBogdanov\MagicServices\Inspector
         arguments:
+            - '@Doctrine\Common\Annotations\Reader'
             - '@Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface'
             - '%magic_services.aware.parameters%'
             - '%magic_services.aware.services%'
+            - '%magic_services.definitions.services%'
 
     magic_services.code_generator:
         class: TonyBogdanov\MagicServices\CodeGenerator
@@ -15,6 +17,13 @@ services:
             - '@magic_services.code_generator'
             - '%magic_services.aware.path%'
             - '%magic_services.aware.namespace%'
+
+    magic_services.definition_generator:
+        class: TonyBogdanov\MagicServices\DefinitionGenerator
+        arguments:
+            - '@magic_services.inspector'
+            - '@magic_services.aware_generator'
+            - '%magic_services.definitions.path%'
 
     magic_services.commands.aware.dump:
         class: TonyBogdanov\MagicServices\Command\Aware\Dump
@@ -29,3 +38,18 @@ services:
         arguments:
             - '@magic_services.inspector'
             - '@magic_services.aware_generator'
+
+    magic_services.commands.definitions.dump:
+        class: TonyBogdanov\MagicServices\Command\Definition\Dump
+        tags: [ 'console.command' ]
+        arguments:
+            - '@magic_services.inspector'
+            - '@magic_services.definition_generator'
+
+    magic_services.commands.definitions.generate:
+        class: TonyBogdanov\MagicServices\Command\Definition\Generate
+        tags: [ 'console.command' ]
+        arguments:
+            - '@magic_services.inspector'
+            - '@magic_services.definition_generator'
+            - '%magic_services.definitions.path%'

@@ -39,4 +39,26 @@ class Normalizer {
 
     }
 
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    public static function normalizeParameterName( string $name ): string {
+
+        $name = static::normalizeName( $name );
+
+        $result = '';
+
+        while ( preg_match( '/^[A-Z]/', $name ) ) {
+
+            $result .= strtolower( substr( $name, 0, 1 ) );
+            $name = substr( $name, 1 );
+
+        }
+
+        return $result . $name;
+
+    }
+
 }

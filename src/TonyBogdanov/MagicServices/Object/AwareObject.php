@@ -50,6 +50,15 @@ class AwareObject {
     /**
      * @return string
      */
+    public function __toString(): string {
+
+        return implode( ',', [ $this->getName(), $this->getType(), $this->getDependency() ] );
+
+    }
+
+    /**
+     * @return string
+     */
     public function getName(): string {
 
         return $this->name;

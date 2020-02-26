@@ -61,8 +61,8 @@ class Generate extends Command {
 
     protected function configure() {
 
-        $this->setDescription( 'Generates interfaces & traits for detected *aware* objects based on the configured' .
-            ' parameters & services.' )
+        $this->setDescription( 'Generates interfaces & traits for detected <comment>aware</comment> objects based' .
+            ' on the configured parameters & services.' )
             ->addOption( 'parameters', 'p', InputOption::VALUE_NONE, 'Generate for parameters.' )
             ->addOption( 'services', 's', InputOption::VALUE_NONE, 'Generate for services.' );;
 
@@ -88,40 +88,35 @@ class Generate extends Command {
 
         }
 
-        try {
+        $generateParameters && $ui->writeln( 'Scanning aware parameters' );
+        $parameters = $generateParameters ? $this->inspector->resolveAwareParameters() : [];
 
-            $parameters = $generateParameters ? $this->inspector->resolveParameters() : [];
-            $services = $generateServices ? $this->inspector->resolveServices() : [];
+        $generateServices && $ui->writeln( 'Scanning aware services' );
+        $services = $generateServices ? $this->inspector->resolveAwareServices() : [];
 
-            if ( $generateParameters && 0 === count( $parameters ) ) {
+        if ( $generateParameters && 0 === count( $parameters ) ) {
 
-                $ui->warning( 'The magic_services.aware.parameters configuration matches no parameters, nothing' .
-                    ' will be generated.' );
+            $ui->warning( 'The magic_services.aware.parameters configuration matches no parameters, nothing' .
+                ' will be generated.' );
 
-            }
+        }
 
-            if ( $generateServices && 0 === count( $services ) ) {
+        if ( $generateServices && 0 === count( $services ) ) {
 
-                $ui->warning( 'The magic_services.aware.services configuration matches no services, nothing' .
-                    ' will be generated.' );
+            $ui->warning( 'The magic_services.aware.services configuration matches no services, nothing' .
+                ' will be generated.' );
 
-            }
+        }
 
-            if ( $generateParameters && 0 < count( $parameters ) ) {
+        if ( $generateParameters && 0 < count( $parameters ) ) {
 
-                $this->generate( $ui, 'parameters', $parameters );
+            $this->generate( $ui, 'parameters', $parameters );
 
-            }
+        }
 
-            if ( $generateServices && 0 < count( $services ) ) {
+        if ( $generateServices && 0 < count( $services ) ) {
 
-                $this->generate( $ui, 'services', $services );
-
-            }
-
-        } catch ( \RuntimeException $e ) {
-
-            $ui->error( $e->getMessage() );
+            $this->generate( $ui, 'services', $services );
 
         }
 
