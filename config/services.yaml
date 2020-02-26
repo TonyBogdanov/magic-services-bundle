@@ -1,62 +1,31 @@
 services:
-    magic_services.config:
-        class: TonyBogdanov\MagicServices\DependencyInjection\Config
-        calls:
-            - [ 'setAwarePath', [ '%magic_services.aware_path%' ] ]
-            - [ 'setAwareNamespace', [ '%magic_services.aware_namespace%' ] ]
-            - [ 'setConfigPath', [ '%magic_services.config_path%' ] ]
-            - [ 'setParameters', [ '%magic_services.parameters%' ] ]
-            - [ 'setInterfaces', [ '%magic_services.interfaces%' ] ]
-
-    magic_services.generator:
-        class: TonyBogdanov\MagicServices\Util\Generator
-
-    magic_services.inspector.parameter:
-        class: TonyBogdanov\MagicServices\Inspector\ParameterInspector
+    magic_services.inspector:
+        class: TonyBogdanov\MagicServices\Inspector
         arguments:
             - '@Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface'
-            - '@magic_services.config'
+            - '%magic_services.aware.parameters%'
+            - '%magic_services.aware.services%'
 
-    magic_services.inspector.interface:
-        class: TonyBogdanov\MagicServices\Inspector\InterfaceInspector
+    magic_services.code_generator:
+        class: TonyBogdanov\MagicServices\CodeGenerator
+
+    magic_services.aware_generator:
+        class: TonyBogdanov\MagicServices\AwareGenerator
         arguments:
-            - '@magic_services.config'
+            - '@magic_services.code_generator'
+            - '%magic_services.aware.path%'
+            - '%magic_services.aware.namespace%'
 
-    magic_services.inspector.trait:
-        class: TonyBogdanov\MagicServices\Inspector\TraitInspector
-        arguments:
-            - '@magic_services.config'
-            - '@magic_services.inspector.interface'
-
-    magic_services.commands.parameters.dump:
-        class: TonyBogdanov\MagicServices\Command\Services\Parameters\Dump
+    magic_services.commands.aware.dump:
+        class: TonyBogdanov\MagicServices\Command\Aware\Dump
         tags: [ 'console.command' ]
         arguments:
-            - '@magic_services.inspector.parameter'
+            - '@magic_services.inspector'
+            - '@magic_services.aware_generator'
 
-    magic_services.commands.parameters.generate:
-        class: TonyBogdanov\MagicServices\Command\Services\Parameters\Generate
+    magic_services.commands.aware.generate:
+        class: TonyBogdanov\MagicServices\Command\Aware\Generate
         tags: [ 'console.command' ]
         arguments:
-            - '@magic_services.generator'
-            - '@magic_services.inspector.parameter'
-
-    magic_services.commands.interfaces.dump:
-        class: TonyBogdanov\MagicServices\Command\Services\Interfaces\Dump
-        tags: [ 'console.command' ]
-        arguments:
-            - '@magic_services.inspector.interface'
-
-    magic_services.commands.interfaces.generate:
-        class: TonyBogdanov\MagicServices\Command\Services\Interfaces\Generate
-        tags: [ 'console.command' ]
-        arguments:
-            - '@magic_services.generator'
-            - '@magic_services.inspector.interface'
-
-    magic_services.commands.traits.generate:
-        class: TonyBogdanov\MagicServices\Command\Services\Traits\Generate
-        tags: [ 'console.command' ]
-        arguments:
-            - '@magic_services.generator'
-            - '@magic_services.inspector.trait'
+            - '@magic_services.inspector'
+            - '@magic_services.aware_generator'

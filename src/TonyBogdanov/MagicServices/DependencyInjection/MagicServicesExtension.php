@@ -34,11 +34,40 @@ class MagicServicesExtension extends Extension {
         $loader = new YamlFileLoader( $container, new FileLocator( __DIR__ . '/../../../../config' ) );
         $loader->load( 'services.yaml' );
 
-        $container->setParameter( 'magic_services.aware_path', $config['aware_path'] );
-        $container->setParameter( 'magic_services.aware_namespace', $config['aware_namespace'] );
-        $container->setParameter( 'magic_services.config_path', $config['config_path'] );
-        $container->setParameter( 'magic_services.parameters', $config['parameters'] );
-        $container->setParameter( 'magic_services.interfaces', $config['interfaces'] );
+        $container->setParameter(
+
+            'magic_services.definitions.path',
+            isset( $config['definitions'] ) ? ( $config['definitions']['path'] ?? null ) : null
+
+        );
+
+        $container->setParameter(
+
+            'magic_services.aware.path',
+            isset( $config['aware'] ) ? ( $config['aware']['path'] ?? null ) : null
+
+        );
+
+        $container->setParameter(
+
+            'magic_services.aware.namespace',
+            isset( $config['aware'] ) ? ( $config['aware']['namespace'] ?? null ) : null
+
+        );
+
+        $container->setParameter(
+
+            'magic_services.aware.parameters',
+            isset( $config['aware'] ) ? ( $config['aware']['parameters'] ?? [] ) : []
+
+        );
+
+        $container->setParameter(
+
+            'magic_services.aware.services',
+            isset( $config['aware'] ) ? ( $config['aware']['services'] ?? [] ) : []
+
+        );
 
     }
 
