@@ -51,7 +51,7 @@ class DefinitionObject {
      */
     public function supportsSetters(): bool {
 
-        return ! $this->getAnnotation() || $this->getAnnotation()->setters;
+        return ! $this->getAnnotation() || $this->getAnnotation()->isSetters();
 
     }
 
@@ -69,7 +69,7 @@ class DefinitionObject {
      */
     public function isIgnored(): bool {
 
-        return $this->getAnnotation() && $this->getAnnotation()->ignore;
+        return $this->getAnnotation() && $this->getAnnotation()->isIgnore();
 
     }
 
@@ -78,7 +78,7 @@ class DefinitionObject {
      */
     public function getTags(): array {
 
-        return $this->getAnnotation() ? $this->getAnnotation()->tags : [];
+        return $this->getAnnotation() ? $this->getAnnotation()->getTags() : [];
 
     }
 
@@ -87,7 +87,7 @@ class DefinitionObject {
      */
     public function isPublic(): bool {
 
-        return $this->getAnnotation() && $this->getAnnotation()->public;
+        return $this->getAnnotation() && $this->getAnnotation()->isPublic();
 
     }
 

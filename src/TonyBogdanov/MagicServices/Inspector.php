@@ -58,21 +58,12 @@ class Inspector {
      */
     protected function resolveAnnotation( \ReflectionClass $reflection ): ?MagicService {
 
+        $parent = $reflection->getParentClass() ? $this->resolveAnnotation( $reflection->getParentClass() ) : null;
+
         /** @var MagicService $annotation */
         $annotation = $this->annotationReader->getClassAnnotation( $reflection, MagicService::class );
-        if ( $annotation ) {
 
-            return $annotation;
-
-        }
-
-        if ( $reflection->getParentClass() ) {
-
-            return $this->resolveAnnotation( $reflection->getParentClass() );
-
-        }
-
-        return null;
+        return $parent ? ( $annotation ? $annotation->merge( $parent ) : $parent ) : $annotation;
 
     }
 
@@ -221,7 +212,7 @@ class Inspector {
 
             }
 
-            if ( ! $includeIgnores && $annotation && $annotation->ignore ) {
+            if ( ! $includeIgnores && $annotation && $annotation->isIgnore() ) {
 
                 continue;
 

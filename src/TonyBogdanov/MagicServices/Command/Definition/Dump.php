@@ -56,7 +56,7 @@ class Dump extends Command {
                     $result[] = [
 
                         0 < $index ? '' : $key,
-                        is_array( $line ) ? $line[0] . '( \'' . $line[1][0] . '\' )' : $line,
+                        is_array( $line ) ? json_encode( $line ) : $line,
 
                     ];
 
