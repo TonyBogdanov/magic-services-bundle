@@ -76,17 +76,6 @@ class MagicServicesExtension extends Extension {
 
         );
 
-        if (
-
-            ( $magicPath = $container->getParameter( 'magic_services.definitions.path' ) ) &&
-            is_file( $magicPath )
-
-        ) {
-
-            $loader->load( $magicPath );
-
-        }
-
     }
 
 }

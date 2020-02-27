@@ -42,8 +42,7 @@ magic_services:
 Path to the configuration file where generated magic service definitions will be
 stored (must end with `.yml` or `.yaml`).
 
-Definitions dumped here will be loaded automatically by the bundle, no need to do it
-yourself.
+Make sure to load the definitions file.
 
 Defaults to: `'%kernel.project_dir%/config/magic_services.yaml'`.
 
