@@ -94,9 +94,9 @@ class Dump extends Command {
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
-    protected function execute( InputInterface $input, OutputInterface $output ) {
+    protected function execute( InputInterface $input, OutputInterface $output ): int {
 
         $ui = new SymfonyStyle( $input, $output );
 
@@ -106,7 +106,7 @@ class Dump extends Command {
         if ( ! $dumpParameters && ! $dumpServices ) {
 
             $ui->warning( 'Nothing to dump. Please call the command with --parameters or --services.' );
-            return;
+            return 1;
 
         }
 
@@ -141,6 +141,8 @@ class Dump extends Command {
             $this->listObjects( $ui, 'Services', $services );
 
         }
+
+        return 0;
 
     }
 

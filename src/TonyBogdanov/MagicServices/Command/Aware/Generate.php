@@ -72,9 +72,9 @@ class Generate extends Command {
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
-    protected function execute( InputInterface $input, OutputInterface $output ) {
+    protected function execute( InputInterface $input, OutputInterface $output ): int {
 
         $ui = new SymfonyStyle( $input, $output );
 
@@ -84,7 +84,7 @@ class Generate extends Command {
         if ( ! $generateParameters && ! $generateServices ) {
 
             $ui->error( 'Nothing to generate. Please call the command with --parameters or --services.' );
-            return;
+            return 1;
 
         }
 
@@ -119,6 +119,8 @@ class Generate extends Command {
             $this->generate( $ui, 'services', $services );
 
         }
+
+        return 0;
 
     }
 

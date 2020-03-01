@@ -95,10 +95,10 @@ class Dump extends Command {
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      * @throws \ReflectionException
      */
-    protected function execute( InputInterface $input, OutputInterface $output ) {
+    protected function execute( InputInterface $input, OutputInterface $output ): int {
 
         $ui = new SymfonyStyle( $input, $output );
 
@@ -112,7 +112,7 @@ class Dump extends Command {
             $ui->warning( 'The magic_services.definitions.services configuration matches no eligible classes,' .
                 ' nothing can be detected.' );
 
-            return;
+            return 1;
 
         }
 
@@ -147,6 +147,8 @@ class Dump extends Command {
             ] : [] ) );
 
         }, $definitions ) );
+
+        return 0;
 
     }
 

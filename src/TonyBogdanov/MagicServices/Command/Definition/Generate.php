@@ -52,10 +52,10 @@ class Generate extends Command {
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      * @throws \ReflectionException
      */
-    protected function execute( InputInterface $input, OutputInterface $output ) {
+    protected function execute( InputInterface $input, OutputInterface $output ): int {
 
         $ui = new SymfonyStyle( $input, $output );
 
@@ -67,7 +67,7 @@ class Generate extends Command {
             $ui->warning( 'The magic_services.definitions.services configuration matches no eligible classes,' .
                 ' nothing will be generated.' );
 
-            return;
+            return 1;
 
         }
 
@@ -93,6 +93,8 @@ class Generate extends Command {
             }, [] ) ], 4 )
 
         );
+
+        return 0;
 
     }
 
