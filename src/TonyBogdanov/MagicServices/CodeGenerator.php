@@ -88,7 +88,8 @@ class CodeGenerator {
 
         $setter = $class
             ->addMethod( 'set' . $name )
-            ->addComment( '@param ' . $baseType . ' $' . Normalizer::normalizeParameterName( $name ) )
+            ->addComment( '@required' )
+            ->addComment( "\n" . '@param ' . $baseType . ' $' . Normalizer::normalizeParameterName( $name ) )
             ->addComment( "\n" . '@return $this' )
             ->setPublic();
 
