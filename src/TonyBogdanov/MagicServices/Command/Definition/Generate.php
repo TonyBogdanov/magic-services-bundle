@@ -15,31 +15,40 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
-use TonyBogdanov\MagicServices\DefinitionGenerator;
-use TonyBogdanov\MagicServices\Inspector;
+use TonyBogdanov\MagicServices\Annotation\MagicService;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\DefinitionGenerator\DefinitionGeneratorAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\DefinitionGenerator\DefinitionGeneratorAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesDefinitionsPath\ParameterMagicServicesDefinitionsPathAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesDefinitionsPath\ParameterMagicServicesDefinitionsPathAwareTrait;
 use TonyBogdanov\MagicServices\Object\DefinitionObject;
 
 /**
  * Class Generate
  *
  * @package TonyBogdanov\MagicServices\Command\Definition
+ *
+ * @MagicService(tags={"console.command"})
  */
-class Generate extends Command {
+class Generate extends Command implements
+    InspectorAwareInterface,
+    DefinitionGeneratorAwareInterface,
+    ParameterMagicServicesDefinitionsPathAwareInterface
+{
+    
+    use InspectorAwareTrait;
+    use DefinitionGeneratorAwareTrait;
+    use ParameterMagicServicesDefinitionsPathAwareTrait;
 
     /**
-     * @var Inspector
+     * @return string|null
      */
-    protected $inspector;
+    public static function getDefaultName() {
 
-    /**
-     * @var DefinitionGenerator
-     */
-    protected $definitionGenerator;
+        return 'services:definitions:generate';
 
-    /**
-     * @var string
-     */
-    protected $path;
+    }
 
     protected function configure() {
 
@@ -60,7 +69,7 @@ class Generate extends Command {
         $ui = new SymfonyStyle( $input, $output );
 
         $ui->writeln( 'Scanning services' );
-        $definitions = $this->inspector->resolveDefinitions( false );
+        $definitions = $this->getInspector()->resolveDefinitions( false );
 
         if ( 0 === count( $definitions ) ) {
 
@@ -75,13 +84,13 @@ class Generate extends Command {
 
         ( new Filesystem() )->dumpFile(
 
-            $this->path,
+            $this->getParameterMagicServicesDefinitionsPath(),
             Yaml::dump( [ 'services' => array_reduce( array_map( function ( DefinitionObject $object ): array {
 
                 return [
 
                     'name' => $object->getReflection()->getName(),
-                    'definition' => $this->definitionGenerator->generate( $object ),
+                    'definition' => $this->getDefinitionGenerator()->generate( $object ),
 
                 ];
 
@@ -100,25 +109,10 @@ class Generate extends Command {
 
     /**
      * Generate constructor.
-     *
-     * @param Inspector $inspector
-     * @param DefinitionGenerator $definitionGenerator
-     * @param string $path
      */
-    public function __construct(
+    public function __construct() {
 
-        Inspector $inspector,
-        DefinitionGenerator $definitionGenerator,
-        string $path
-
-    ) {
-
-        parent::__construct( 'services:definitions:generate' );
-
-        $this->inspector = $inspector;
-        $this->definitionGenerator = $definitionGenerator;
-
-        $this->path = $path;
+        parent::__construct();
 
     }
 

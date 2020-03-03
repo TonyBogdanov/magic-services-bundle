@@ -14,8 +14,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use TonyBogdanov\MagicServices\AwareGenerator;
-use TonyBogdanov\MagicServices\Inspector;
+use TonyBogdanov\MagicServices\Annotation\MagicService;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\AwareGenerator\AwareGeneratorAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\AwareGenerator\AwareGeneratorAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareTrait;
 use TonyBogdanov\MagicServices\Object\AwareObject;
 use TonyBogdanov\MagicServices\Util\Normalizer;
 
@@ -23,18 +26,25 @@ use TonyBogdanov\MagicServices\Util\Normalizer;
  * Class Dump
  *
  * @package TonyBogdanov\MagicServices\Command\Aware
+ *
+ * @MagicService(tags={"console.command"})
  */
-class Dump extends Command {
+class Dump extends Command implements
+    InspectorAwareInterface,
+    AwareGeneratorAwareInterface
+{
+
+    use InspectorAwareTrait;
+    use AwareGeneratorAwareTrait;
 
     /**
-     * @var Inspector
+     * @return string|null
      */
-    protected $inspector;
+    public static function getDefaultName() {
 
-    /**
-     * @var AwareGenerator
-     */
-    protected $awareGenerator;
+        return 'services:aware:dump';
+
+    }
 
     /**
      * @param SymfonyStyle $ui
@@ -45,11 +55,13 @@ class Dump extends Command {
      */
     protected function listObjects( SymfonyStyle $ui, string $title, array $objects ) {
 
-        $padding = max( ...array_map( function ( AwareObject $object ): int {
+        $padding = array_map( function ( AwareObject $object ): int {
 
             return strlen( $object->getName() );
 
-        }, $objects ) );
+        }, $objects );
+
+        $padding = 1 < count( $padding ) ? max( ...$padding ) : $padding[0];
 
         $ui->title( $title );
         $ui->table( [
@@ -69,8 +81,8 @@ class Dump extends Command {
                 $object->getType(),
                 $object->getDependency(),
 
-                ( $this->awareGenerator->isInterfaceExist( $object ) ? '<info>E</info>' : '<error>M</error>' ) .
-                ( $this->awareGenerator->isTraitExist( $object ) ? '<info>E</info>' : '<error>M</error>' ),
+                ( $this->getAwareGenerator()->isInterfaceExist( $object ) ? '<info>E</info>' : '<error>M</error>' ) .
+                ( $this->getAwareGenerator()->isTraitExist( $object ) ? '<info>E</info>' : '<error>M</error>' ),
 
             ];
 
@@ -111,10 +123,10 @@ class Dump extends Command {
         }
 
         $dumpParameters && $ui->writeln( 'Scanning aware parameters' );
-        $parameters = $dumpParameters ? $this->inspector->resolveAwareParameters() : [];
+        $parameters = $dumpParameters ? $this->getInspector()->resolveAwareParameters() : [];
 
         $dumpServices && $ui->writeln( 'Scanning aware services' );
-        $services = $dumpServices ? $this->inspector->resolveAwareServices() : [];
+        $services = $dumpServices ? $this->getInspector()->resolveAwareServices() : [];
 
         if ( $dumpParameters && 0 === count( $parameters ) ) {
 
@@ -148,16 +160,10 @@ class Dump extends Command {
 
     /**
      * Dump constructor.
-     *
-     * @param Inspector $inspector
-     * @param AwareGenerator $awareGenerator
      */
-    public function __construct( Inspector $inspector, AwareGenerator $awareGenerator ) {
+    public function __construct() {
 
-        parent::__construct( 'services:aware:dump' );
-
-        $this->inspector = $inspector;
-        $this->awareGenerator = $awareGenerator;
+        parent::__construct();
 
     }
 

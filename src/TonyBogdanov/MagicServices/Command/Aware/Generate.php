@@ -14,26 +14,36 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use TonyBogdanov\MagicServices\AwareGenerator;
-use TonyBogdanov\MagicServices\Inspector;
+use TonyBogdanov\MagicServices\Annotation\MagicService;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\AwareGenerator\AwareGeneratorAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\AwareGenerator\AwareGeneratorAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareTrait;
 use TonyBogdanov\MagicServices\Object\AwareObject;
 
 /**
  * Class Generate
  *
  * @package TonyBogdanov\MagicServices\Command\Aware
+ *
+ * @MagicService(tags={"console.command"})
  */
-class Generate extends Command {
+class Generate extends Command implements
+    InspectorAwareInterface,
+    AwareGeneratorAwareInterface
+{
+    
+    use InspectorAwareTrait;
+    use AwareGeneratorAwareTrait;
 
     /**
-     * @var Inspector
+     * @return string|null
      */
-    protected $inspector;
+    public static function getDefaultName() {
 
-    /**
-     * @var AwareGenerator
-     */
-    protected $awareGenerator;
+        return 'services:aware:generate';
+
+    }
 
     /**
      * @param SymfonyStyle $ui
@@ -49,8 +59,8 @@ class Generate extends Command {
 
         foreach ( $objects as $object ) {
 
-            $this->awareGenerator->generateInterface( $object );
-            $this->awareGenerator->generateTrait( $object );
+            $this->getAwareGenerator()->generateInterface( $object );
+            $this->getAwareGenerator()->generateTrait( $object );
 
         }
 
@@ -89,10 +99,10 @@ class Generate extends Command {
         }
 
         $generateParameters && $ui->writeln( 'Scanning aware parameters' );
-        $parameters = $generateParameters ? $this->inspector->resolveAwareParameters() : [];
+        $parameters = $generateParameters ? $this->getInspector()->resolveAwareParameters() : [];
 
         $generateServices && $ui->writeln( 'Scanning aware services' );
-        $services = $generateServices ? $this->inspector->resolveAwareServices() : [];
+        $services = $generateServices ? $this->getInspector()->resolveAwareServices() : [];
 
         if ( $generateParameters && 0 === count( $parameters ) ) {
 
@@ -126,16 +136,10 @@ class Generate extends Command {
 
     /**
      * Generate constructor.
-     *
-     * @param Inspector $inspector
-     * @param AwareGenerator $awareGenerator
      */
-    public function __construct( Inspector $inspector, AwareGenerator $awareGenerator ) {
+    public function __construct() {
 
-        parent::__construct( 'services:aware:generate' );
-
-        $this->inspector = $inspector;
-        $this->awareGenerator = $awareGenerator;
+        parent::__construct();
 
     }
 

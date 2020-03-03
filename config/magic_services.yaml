@@ -1,0 +1,52 @@
+services:
+    TonyBogdanov\MagicServices\AwareGenerator:
+        class: TonyBogdanov\MagicServices\AwareGenerator
+        calls:
+            - [setCodeGenerator, ['@TonyBogdanov\MagicServices\CodeGenerator']]
+            - [setParameterMagicServicesAwarePath, ['%magic_services.aware.path%']]
+            - [setParameterMagicServicesAwareNamespace, ['%magic_services.aware.namespace%']]
+    TonyBogdanov\MagicServices\CodeGenerator:
+        class: TonyBogdanov\MagicServices\CodeGenerator
+    TonyBogdanov\MagicServices\Command\Aware\Dump:
+        class: TonyBogdanov\MagicServices\Command\Aware\Dump
+        tags:
+            - console.command
+        calls:
+            - [setInspector, ['@TonyBogdanov\MagicServices\Inspector']]
+            - [setAwareGenerator, ['@TonyBogdanov\MagicServices\AwareGenerator']]
+    TonyBogdanov\MagicServices\Command\Aware\Generate:
+        class: TonyBogdanov\MagicServices\Command\Aware\Generate
+        tags:
+            - console.command
+        calls:
+            - [setInspector, ['@TonyBogdanov\MagicServices\Inspector']]
+            - [setAwareGenerator, ['@TonyBogdanov\MagicServices\AwareGenerator']]
+    TonyBogdanov\MagicServices\Command\Definition\Dump:
+        class: TonyBogdanov\MagicServices\Command\Definition\Dump
+        tags:
+            - console.command
+        calls:
+            - [setInspector, ['@TonyBogdanov\MagicServices\Inspector']]
+            - [setDefinitionGenerator, ['@TonyBogdanov\MagicServices\DefinitionGenerator']]
+    TonyBogdanov\MagicServices\Command\Definition\Generate:
+        class: TonyBogdanov\MagicServices\Command\Definition\Generate
+        tags:
+            - console.command
+        calls:
+            - [setInspector, ['@TonyBogdanov\MagicServices\Inspector']]
+            - [setDefinitionGenerator, ['@TonyBogdanov\MagicServices\DefinitionGenerator']]
+            - [setParameterMagicServicesDefinitionsPath, ['%magic_services.definitions.path%']]
+    TonyBogdanov\MagicServices\DefinitionGenerator:
+        class: TonyBogdanov\MagicServices\DefinitionGenerator
+        calls:
+            - [setInspector, ['@TonyBogdanov\MagicServices\Inspector']]
+            - [setAwareGenerator, ['@TonyBogdanov\MagicServices\AwareGenerator']]
+            - [setParameterMagicServicesDefinitionsPath, ['%magic_services.definitions.path%']]
+    TonyBogdanov\MagicServices\Inspector:
+        class: TonyBogdanov\MagicServices\Inspector
+        calls:
+            - [setAnnotationReader, ['@Doctrine\Common\Annotations\Reader']]
+            - [setParameterBag, ['@Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface']]
+            - [setParameterMagicServicesAwareParameters, ['%magic_services.aware.parameters%']]
+            - [setParameterMagicServicesAwareServices, ['%magic_services.aware.services%']]
+            - [setParameterMagicServicesDefinitionsServices, ['%magic_services.definitions.services%']]

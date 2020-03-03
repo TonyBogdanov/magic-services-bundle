@@ -14,26 +14,36 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use TonyBogdanov\MagicServices\DefinitionGenerator;
-use TonyBogdanov\MagicServices\Inspector;
+use TonyBogdanov\MagicServices\Annotation\MagicService;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\DefinitionGenerator\DefinitionGeneratorAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\DefinitionGenerator\DefinitionGeneratorAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareTrait;
 use TonyBogdanov\MagicServices\Object\DefinitionObject;
 
 /**
  * Class Dump
  *
  * @package TonyBogdanov\MagicServices\Command\Definition
+ *
+ * @MagicService(tags={"console.command"})
  */
-class Dump extends Command {
+class Dump extends Command implements
+    InspectorAwareInterface,
+    DefinitionGeneratorAwareInterface
+{
+
+    use InspectorAwareTrait;
+    use DefinitionGeneratorAwareTrait;
 
     /**
-     * @var Inspector
+     * @return string|null
      */
-    protected $inspector;
-
-    /**
-     * @var DefinitionGenerator
-     */
-    protected $definitionGenerator;
+    public static function getDefaultName() {
+        
+        return 'services:definitions:dump';
+        
+    }
 
     /**
      * @param array $definition
@@ -105,7 +115,7 @@ class Dump extends Command {
         $dumpPreviews = $input->getOption( 'previews' );
 
         $ui->writeln( 'Scanning services' );
-        $definitions = $this->inspector->resolveDefinitions();
+        $definitions = $this->getInspector()->resolveDefinitions();
 
         if ( 0 === count( $definitions ) ) {
 
@@ -142,7 +152,7 @@ class Dump extends Command {
 
             ], $dumpPreviews ? [
 
-                $object->isIgnored() ? '-' : $this->preview( $this->definitionGenerator->generate( $object ) ),
+                $object->isIgnored() ? '-' : $this->preview( $this->getDefinitionGenerator()->generate( $object ) ),
 
             ] : [] ) );
 
@@ -154,16 +164,10 @@ class Dump extends Command {
 
     /**
      * Dump constructor.
-     *
-     * @param Inspector $inspector
-     * @param DefinitionGenerator $definitionGenerator
      */
-    public function __construct( Inspector $inspector, DefinitionGenerator $definitionGenerator ) {
+    public function __construct() {
 
-        parent::__construct( 'services:definitions:dump' );
-
-        $this->inspector = $inspector;
-        $this->definitionGenerator = $definitionGenerator;
+        parent::__construct();
 
     }
 

@@ -10,6 +10,7 @@
 namespace TonyBogdanov\MagicServices;
 
 use Nette\PhpGenerator\PhpFile;
+use TonyBogdanov\MagicServices\Annotation\MagicService;
 use TonyBogdanov\MagicServices\Aware\ServiceAwareInterface;
 use TonyBogdanov\MagicServices\Util\Normalizer;
 
@@ -17,6 +18,8 @@ use TonyBogdanov\MagicServices\Util\Normalizer;
  * Class CodeGenerator
  *
  * @package TonyBogdanov\MagicServices
+ *
+ * @MagicService()
  */
 class CodeGenerator {
 

@@ -29,52 +29,18 @@ class MagicServicesExtension extends Extension {
      */
     public function load( array $configs, ContainerBuilder $container ) {
 
+        $loader = new YamlFileLoader( $container, new FileLocator( __DIR__ . '/../../../../config' ) );
+        $loader->load( 'magic_services.yaml' );
+
         $config = $this->processConfiguration( new MagicServicesConfiguration(), $configs );
 
-        $loader = new YamlFileLoader( $container, new FileLocator( __DIR__ . '/../../../../config' ) );
-        $loader->load( 'services.yaml' );
+        $container->setParameter( 'magic_services.definitions.path', $config['definitions']['path'] );
+        $container->setParameter( 'magic_services.definitions.services', $config['definitions']['services'] );
 
-        $container->setParameter(
-
-            'magic_services.definitions.path',
-            isset( $config['definitions'] ) ? ( $config['definitions']['path'] ?? null ) : null
-
-        );
-
-        $container->setParameter(
-
-            'magic_services.definitions.services',
-            isset( $config['definitions'] ) ? ( $config['definitions']['services'] ?? [] ) : []
-
-        );
-
-        $container->setParameter(
-
-            'magic_services.aware.path',
-            isset( $config['aware'] ) ? ( $config['aware']['path'] ?? null ) : null
-
-        );
-
-        $container->setParameter(
-
-            'magic_services.aware.namespace',
-            isset( $config['aware'] ) ? ( $config['aware']['namespace'] ?? null ) : null
-
-        );
-
-        $container->setParameter(
-
-            'magic_services.aware.parameters',
-            isset( $config['aware'] ) ? ( $config['aware']['parameters'] ?? [] ) : []
-
-        );
-
-        $container->setParameter(
-
-            'magic_services.aware.services',
-            isset( $config['aware'] ) ? ( $config['aware']['services'] ?? [] ) : []
-
-        );
+        $container->setParameter( 'magic_services.aware.path', $config['aware']['path'] );
+        $container->setParameter( 'magic_services.aware.namespace', $config['aware']['namespace'] );
+        $container->setParameter( 'magic_services.aware.parameters', $config['aware']['parameters'] );
+        $container->setParameter( 'magic_services.aware.services', $config['aware']['services'] );
 
     }
 

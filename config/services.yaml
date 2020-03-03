@@ -1,55 +1,19 @@
-services:
-    magic_services.inspector:
-        class: TonyBogdanov\MagicServices\Inspector
-        arguments:
-            - '@Doctrine\Common\Annotations\Reader'
-            - '@Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface'
-            - '%magic_services.aware.parameters%'
-            - '%magic_services.aware.services%'
-            - '%magic_services.definitions.services%'
-
-    magic_services.code_generator:
-        class: TonyBogdanov\MagicServices\CodeGenerator
-
-    magic_services.aware_generator:
-        class: TonyBogdanov\MagicServices\AwareGenerator
-        arguments:
-            - '@magic_services.code_generator'
-            - '%magic_services.aware.path%'
-            - '%magic_services.aware.namespace%'
-
-    magic_services.definition_generator:
-        class: TonyBogdanov\MagicServices\DefinitionGenerator
-        arguments:
-            - '@magic_services.inspector'
-            - '@magic_services.aware_generator'
-            - '%magic_services.definitions.path%'
-
-    magic_services.commands.aware.dump:
-        class: TonyBogdanov\MagicServices\Command\Aware\Dump
-        tags: [ 'console.command' ]
-        arguments:
-            - '@magic_services.inspector'
-            - '@magic_services.aware_generator'
-
-    magic_services.commands.aware.generate:
-        class: TonyBogdanov\MagicServices\Command\Aware\Generate
-        tags: [ 'console.command' ]
-        arguments:
-            - '@magic_services.inspector'
-            - '@magic_services.aware_generator'
-
-    magic_services.commands.definitions.dump:
-        class: TonyBogdanov\MagicServices\Command\Definition\Dump
-        tags: [ 'console.command' ]
-        arguments:
-            - '@magic_services.inspector'
-            - '@magic_services.definition_generator'
-
-    magic_services.commands.definitions.generate:
-        class: TonyBogdanov\MagicServices\Command\Definition\Generate
-        tags: [ 'console.command' ]
-        arguments:
-            - '@magic_services.inspector'
-            - '@magic_services.definition_generator'
-            - '%magic_services.definitions.path%'
+magic_services:
+    definitions:
+        path: '%kernel.project_dir%/config/magic_services.yaml'
+        services:
+            - '%kernel.project_dir%/src'
+    aware:
+        path: '%kernel.project_dir%/src/TonyBogdanov/MagicServices/DependencyInjection/Aware'
+        namespace: 'TonyBogdanov\MagicServices\DependencyInjection\Aware'
+        parameters:
+            - regex: '/^magic_services\.(.+)$/i'
+              name: 'ParameterMagicServices$1'
+        services:
+            - type: 'Doctrine\Common\Annotations\Reader'
+              name: 'AnnotationReader'
+            - 'Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface'
+            - 'TonyBogdanov\MagicServices\CodeGenerator'
+            - 'TonyBogdanov\MagicServices\AwareGenerator'
+            - 'TonyBogdanov\MagicServices\DefinitionGenerator'
+            - 'TonyBogdanov\MagicServices\Inspector'

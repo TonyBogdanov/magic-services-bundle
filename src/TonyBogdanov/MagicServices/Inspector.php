@@ -9,11 +9,19 @@
 
 namespace TonyBogdanov\MagicServices;
 
-use Doctrine\Common\Annotations\Reader;
 use Nette\PhpGenerator\Type;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use TonyBogdanov\MagicServices\Annotation\MagicService;
 use TonyBogdanov\MagicServices\Aware\ServiceAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\AnnotationReader\AnnotationReaderAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\AnnotationReader\AnnotationReaderAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterBag\ParameterBagAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterBag\ParameterBagAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesAwareParameters\ParameterMagicServicesAwareParametersAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesAwareParameters\ParameterMagicServicesAwareParametersAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesAwareServices\ParameterMagicServicesAwareServicesAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesAwareServices\ParameterMagicServicesAwareServicesAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesDefinitionsServices\ParameterMagicServicesDefinitionsServicesAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesDefinitionsServices\ParameterMagicServicesDefinitionsServicesAwareTrait;
 use TonyBogdanov\MagicServices\Object\AwareObject;
 use TonyBogdanov\MagicServices\Object\DefinitionObject;
 use TonyBogdanov\MagicServices\Util\ClassFinder;
@@ -23,33 +31,27 @@ use TonyBogdanov\MagicServices\Util\Normalizer;
  * Class Inspector
  *
  * @package TonyBogdanov\MagicServices
+ *
+ * @MagicService()
  */
-class Inspector {
+class Inspector implements
+    AnnotationReaderAwareInterface,
+    ParameterBagAwareInterface,
+    ParameterMagicServicesAwareParametersAwareInterface,
+    ParameterMagicServicesAwareServicesAwareInterface,
+    ParameterMagicServicesDefinitionsServicesAwareInterface
+{
 
-    /**
-     * @var Reader
-     */
-    protected $annotationReader;
-
-    /**
-     * @var ParameterBagInterface
-     */
-    protected $parameterBag;
-
-    /**
-     * @var string[]
-     */
-    protected $awareParameters;
+    use AnnotationReaderAwareTrait;
+    use ParameterBagAwareTrait;
+    use ParameterMagicServicesAwareParametersAwareTrait;
+    use ParameterMagicServicesAwareServicesAwareTrait;
+    use ParameterMagicServicesDefinitionsServicesAwareTrait;
 
     /**
      * @var string[]
      */
-    protected $awareServices;
-
-    /**
-     * @var string[]
-     */
-    protected $definitions;
+    protected $parameterMagicServicesDefinitionsServices;
 
     /**
      * @param \ReflectionClass $reflection
@@ -61,38 +63,9 @@ class Inspector {
         $parent = $reflection->getParentClass() ? $this->resolveAnnotation( $reflection->getParentClass() ) : null;
 
         /** @var MagicService $annotation */
-        $annotation = $this->annotationReader->getClassAnnotation( $reflection, MagicService::class );
+        $annotation = $this->getAnnotationReader()->getClassAnnotation( $reflection, MagicService::class );
 
         return $parent ? ( $annotation ? $annotation->merge( $parent ) : $parent ) : $annotation;
-
-    }
-
-    /**
-     * Inspector constructor.
-     *
-     * @param Reader $annotationReader
-     * @param ParameterBagInterface $parameterBag
-     * @param array $awareParameters
-     * @param array $awareServices
-     * @param array $definitions
-     */
-    public function __construct(
-
-        Reader $annotationReader,
-        ParameterBagInterface $parameterBag,
-        array $awareParameters,
-        array $awareServices,
-        array $definitions
-
-    ) {
-
-        $this->annotationReader = $annotationReader;
-        $this->parameterBag = $parameterBag;
-
-        $this->awareParameters = $awareParameters;
-        $this->awareServices = $awareServices;
-
-        $this->definitions = $definitions;
 
     }
 
@@ -103,12 +76,12 @@ class Inspector {
 
         $objects = [];
 
-        foreach ( $this->awareParameters as $parameter ) {
+        foreach ( $this->getParameterMagicServicesAwareParameters() as $parameter ) {
 
             $matchRegex = $parameter['regex'];
             $matchName = $parameter['name'] ?? 'Parameter$0';
 
-            foreach ( $this->parameterBag->all() as $name => $value ) {
+            foreach ( $this->getParameterBag()->all() as $name => $value ) {
 
                 if ( ! preg_match( $matchRegex, $name, $matches ) ) {
 
@@ -159,7 +132,7 @@ class Inspector {
 
         $objects = [];
 
-        foreach ( $this->awareServices as $service ) {
+        foreach ( $this->getParameterMagicServicesAwareServices() as $service ) {
 
             $definitionType = $service['type'];
             $definitionService = $service['service'] ?? '@' . $definitionType;
@@ -195,7 +168,7 @@ class Inspector {
 
         $definitions = [];
 
-        foreach ( ClassFinder::findClasses( $this->definitions ) as $class ) {
+        foreach ( ClassFinder::findClasses( $this->parameterMagicServicesDefinitionsServices ) as $class ) {
 
             $reflection = new \ReflectionClass( $class );
             if ( $reflection->isAbstract() ) {

@@ -36,6 +36,7 @@ class MagicServicesConfiguration implements ConfigurationInterface {
 
         $root
             ->arrayNode( 'definitions' )
+                ->addDefaultsIfNotSet()
                 ->children()
                     ->scalarNode( 'path' )
                         ->defaultValue( '%kernel.project_dir%/config/magic_services.yaml' )
@@ -53,6 +54,7 @@ class MagicServicesConfiguration implements ConfigurationInterface {
 
         $root
             ->arrayNode( 'aware' )
+                ->addDefaultsIfNotSet()
                 ->children()
                     ->scalarNode( 'path' )
                         ->defaultValue( '%kernel.project_dir%/src/DependencyInjection/Aware' )

@@ -1,5 +1,3 @@
-# Auto-magic service definition generator
-
 [![Latest Stable Version](https://poser.pugx.org/tonybogdanov/magic-services-bundle/v/stable)](https://packagist.org/packages/tonybogdanov/magic-services-bundle)
 [![License](https://poser.pugx.org/tonybogdanov/magic-services-bundle/license)](https://packagist.org/packages/tonybogdanov/magic-services-bundle)
 
@@ -275,3 +273,15 @@ Example:
 
 *Aware* interfaces / traits will use this name as both a folder and a class name,
 adding an additional `AwareInterface` and `AwareTrait` suffix respectively.
+
+## Pseudo-Console
+
+Sometimes you might need to use the magic services generation capabilities outside of a
+Symfony application. An example of this would be during the development of a bundle, if
+you don't have a corresponding bootstrapped Symfony app.
+
+To ease the use of this tool, it comes with a built-in bootstrapped micro installation
+of Symfony, exposing only the magic services commands.
+
+To use it simply locate the `./bin/console` executable within this package and use it
+as you would use Symfony's console.

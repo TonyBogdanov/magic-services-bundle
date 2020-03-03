@@ -10,6 +10,12 @@
 namespace TonyBogdanov\MagicServices;
 
 use TonyBogdanov\MagicServices\Aware\ServiceAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\AwareGenerator\AwareGeneratorAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\AwareGenerator\AwareGeneratorAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesDefinitionsPath\ParameterMagicServicesDefinitionsPathAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesDefinitionsPath\ParameterMagicServicesDefinitionsPathAwareTrait;
 use TonyBogdanov\MagicServices\Object\AwareObject;
 use TonyBogdanov\MagicServices\Object\DefinitionObject;
 use TonyBogdanov\MagicServices\Util\Normalizer;
@@ -20,24 +26,17 @@ use TonyBogdanov\Memoize\Traits\MemoizeTrait;
  *
  * @package TonyBogdanov\MagicServices
  */
-class DefinitionGenerator {
+class DefinitionGenerator implements
+    InspectorAwareInterface,
+    AwareGeneratorAwareInterface,
+    ParameterMagicServicesDefinitionsPathAwareInterface
+{
 
     use MemoizeTrait;
-
-    /**
-     * @var string
-     */
-    protected $path;
-
-    /**
-     * @var Inspector
-     */
-    protected $inspector;
-
-    /**
-     * @var AwareGenerator
-     */
-    protected $awareGenerator;
+    
+    use InspectorAwareTrait;
+    use AwareGeneratorAwareTrait;
+    use ParameterMagicServicesDefinitionsPathAwareTrait;
 
     /**
      * @param string $interfaceName
@@ -79,8 +78,8 @@ class DefinitionGenerator {
 
             return array_merge(
 
-                $this->inspector->resolveAwareParameters(),
-                $this->inspector->resolveAwareServices()
+                $this->getInspector()->resolveAwareParameters(),
+                $this->getInspector()->resolveAwareServices()
 
             );
 
@@ -104,7 +103,7 @@ class DefinitionGenerator {
             return [
 
                 'object' => $object,
-                'interface' => $this->awareGenerator->getInterfaceClassName( $object ),
+                'interface' => $this->getAwareGenerator()->getInterfaceClassName( $object ),
 
             ];
 
@@ -199,22 +198,6 @@ class DefinitionGenerator {
         }
 
         return $result;
-
-    }
-
-    /**
-     * DefinitionGenerator constructor.
-     *
-     * @param Inspector $inspector
-     * @param AwareGenerator $awareGenerator
-     * @param string $path
-     */
-    public function __construct( Inspector $inspector, AwareGenerator $awareGenerator, string $path ) {
-
-        $this->inspector = $inspector;
-        $this->awareGenerator = $awareGenerator;
-
-        $this->path = $path;
 
     }
 

@@ -11,6 +11,12 @@ namespace TonyBogdanov\MagicServices;
 
 use Nette\PhpGenerator\PsrPrinter;
 use Symfony\Component\Filesystem\Filesystem;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\CodeGenerator\CodeGeneratorAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\CodeGenerator\CodeGeneratorAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesAwareNamespace\ParameterMagicServicesAwareNamespaceAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesAwareNamespace\ParameterMagicServicesAwareNamespaceAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesAwarePath\ParameterMagicServicesAwarePathAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesAwarePath\ParameterMagicServicesAwarePathAwareTrait;
 use TonyBogdanov\MagicServices\Object\AwareObject;
 
 /**
@@ -18,38 +24,15 @@ use TonyBogdanov\MagicServices\Object\AwareObject;
  *
  * @package TonyBogdanov\MagicServices
  */
-class AwareGenerator {
+class AwareGenerator implements
+    CodeGeneratorAwareInterface,
+    ParameterMagicServicesAwarePathAwareInterface,
+    ParameterMagicServicesAwareNamespaceAwareInterface
+{
 
-    /**
-     * @var CodeGenerator
-     */
-    protected $codeGenerator;
-
-    /**
-     * @var string
-     */
-    protected $path;
-
-    /**
-     * @var string
-     */
-    protected $namespace;
-
-    /**
-     * AwareGenerator constructor.
-     *
-     * @param CodeGenerator $codeGenerator
-     * @param string $path
-     * @param string $namespace
-     */
-    public function __construct( CodeGenerator $codeGenerator, string $path, string $namespace ) {
-
-        $this->codeGenerator = $codeGenerator;
-
-        $this->path = $path;
-        $this->namespace = $namespace;
-
-    }
+    use CodeGeneratorAwareTrait;
+    use ParameterMagicServicesAwarePathAwareTrait;
+    use ParameterMagicServicesAwareNamespaceAwareTrait;
 
     /**
      * @param AwareObject $object
@@ -58,7 +41,7 @@ class AwareGenerator {
      */
     public function getNamespaceName( AwareObject $object ): string {
 
-        return $this->namespace . '\\' . $object->getName();
+        return $this->getParameterMagicServicesAwareNamespace() . '\\' . $object->getName();
 
     }
 
@@ -69,7 +52,8 @@ class AwareGenerator {
      */
     public function getInterfaceClassName( AwareObject $object ): string {
 
-        return $this->namespace . '\\' . $object->getName() . '\\' . $object->getName() . 'AwareInterface';
+        return $this->getParameterMagicServicesAwareNamespace() . '\\' . $object->getName() . '\\' .
+            $object->getName() . 'AwareInterface';
 
     }
 
@@ -80,7 +64,8 @@ class AwareGenerator {
      */
     public function getTraitClassName( AwareObject $object ): string {
 
-        return $this->namespace . '\\' . $object->getName() . '\\' . $object->getName() . 'AwareTrait';
+        return $this->getParameterMagicServicesAwareNamespace() . '\\' . $object->getName() . '\\' .
+            $object->getName() . 'AwareTrait';
 
     }
 
@@ -114,7 +99,7 @@ class AwareGenerator {
     public function getInterfacePath( AwareObject $object ): string {
 
         return
-            $this->path . DIRECTORY_SEPARATOR .
+            $this->getParameterMagicServicesAwarePath() . DIRECTORY_SEPARATOR .
             $object->getName() . DIRECTORY_SEPARATOR .
             $object->getName() . 'AwareInterface.php';
 
@@ -129,7 +114,7 @@ class AwareGenerator {
     public function getTraitPath( AwareObject $object ): string {
 
         return
-            $this->path . DIRECTORY_SEPARATOR .
+            $this->getParameterMagicServicesAwarePath() . DIRECTORY_SEPARATOR .
             $object->getName() . DIRECTORY_SEPARATOR .
             $object->getName() . 'AwareTrait.php';
 
@@ -143,7 +128,7 @@ class AwareGenerator {
     public function generateInterface( AwareObject $object ) {
 
         $printer = new PsrPrinter();
-        $file = $this->codeGenerator->generate(
+        $file = $this->getCodeGenerator()->generate(
 
             true,
             $this->getInterfaceClassName( $object ),
@@ -165,7 +150,7 @@ class AwareGenerator {
     public function generateTrait( AwareObject $object ) {
 
         $printer = new PsrPrinter();
-        $file = $this->codeGenerator->generate(
+        $file = $this->getCodeGenerator()->generate(
 
             false,
             $this->getTraitClassName( $object ),
