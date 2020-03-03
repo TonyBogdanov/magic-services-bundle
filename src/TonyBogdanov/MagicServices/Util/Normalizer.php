@@ -50,7 +50,7 @@ class Normalizer {
 
         $result = '';
 
-        while ( preg_match( '/^[A-Z]/', $name ) ) {
+        while ( preg_match( '/^[A-Z][A-Z]/', $name ) ) {
 
             $result .= strtolower( substr( $name, 0, 1 ) );
             $name = substr( $name, 1 );
