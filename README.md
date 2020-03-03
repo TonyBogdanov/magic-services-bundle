@@ -292,3 +292,16 @@ Example:
 ```bash
 ./vendor/magic-services-bundle/bin/console /path/to/config/services.yaml services:aware:dump -ps
 ```
+
+> ### NOTE
+> If you are using this method you have to keep in mind that any parameters or services
+> you try to reference in the configuration file will be resolved in the context of the
+> micro-kernel.
+>
+> For example, a `%kernel.project_dir%` parameter will resolve to the project directory
+> of the magic services bundle and not the bundle / project invoking the console.
+> 
+> To be able to unambiguously reference local paths, you can use the magic parameters
+> (only available with this custom console) `%__file__%` and `%__dir__%` resolving to,
+> respectively, the path to the configuration file and the folder of the configuration
+> file, e.g. `/path/to/config/services.yaml` and `/path/to/config`.

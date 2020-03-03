@@ -79,7 +79,10 @@ class Kernel extends BaseKernel {
      * @throws \Exception
      */
     protected function configureContainer( ContainerBuilder $container, LoaderInterface $loader ) {
-        
+
+        $container->setParameter( '__file__', $this->configPath );
+        $container->setParameter( '__dir__', dirname( $this->configPath ) );
+
         $loader->load( $this->configPath );
 
     }
