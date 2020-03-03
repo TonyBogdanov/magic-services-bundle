@@ -57,7 +57,7 @@ class Normalizer {
 
         }
 
-        return $result . $name;
+        return lcfirst( $result . $name );
 
     }
 
