@@ -29,7 +29,27 @@ class Kernel extends BaseKernel {
 
     use MicroKernelTrait;
 
-    private const CONFIG_EXTS = '.{php,xml,yaml,yml}';
+    protected const CONFIG_EXTS = '.{php,xml,yaml,yml}';
+
+    /**
+     * @var string
+     */
+    protected $configPath;
+
+    /**
+     * Kernel constructor.
+     *
+     * @param string $configPath
+     * @param string $environment
+     * @param bool $debug
+     */
+    public function __construct( string $configPath, string $environment, bool $debug ) {
+
+        parent::__construct( $environment, $debug );
+
+        $this->configPath = $configPath;
+
+    }
 
     /**
      * @return iterable|BundleInterface[]
@@ -59,9 +79,8 @@ class Kernel extends BaseKernel {
      * @throws \Exception
      */
     protected function configureContainer( ContainerBuilder $container, LoaderInterface $loader ) {
-
-        $confDir = $this->getProjectDir() . '/config';
-        $loader->load( $confDir . '/{services}' . self::CONFIG_EXTS, 'glob' );
+        
+        $loader->load( $this->configPath );
 
     }
 

@@ -25,11 +25,19 @@ if ( ! class_exists( Application::class ) ) {
 putenv( 'APP_ENV=' . $_SERVER['APP_ENV'] = $_ENV['APP_ENV'] = 'dev' );
 putenv( 'APP_DEBUG=' . $_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] = '1' );
 
-$input = new ArgvInput();
+if ( ! isset( $argv[1] ) || ! is_file( $argv[1] ) ) {
+
+    throw new LogicException( 'You need to supply a path to a valid YAML file containing your magic services' .
+        ' configuration as first argument.' );
+
+}
+
+$configPath = array_splice( $argv, 1, 1 )[0];
+$input = new ArgvInput( $argv );
 
 umask( 0000 );
 Debug::enable();
 
-$kernel = new Kernel( 'dev', true );
+$kernel = new Kernel( $configPath, 'dev', true );
 $application = new Application( $kernel );
 $application->run( $input );

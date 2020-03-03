@@ -284,4 +284,11 @@ To ease the use of this tool, it comes with a built-in bootstrapped micro instal
 of Symfony, exposing only the magic services commands.
 
 To use it simply locate the `./bin/console` executable within this package and use it
-as you would use Symfony's console.
+as you would use Symfony's console, specifying a path to a YAML file containing your
+magic services configuration.
+
+Example:
+
+```bash
+./vendor/magic-services-bundle/bin/console /path/to/config/services.yaml services:aware:dump -ps
+```
