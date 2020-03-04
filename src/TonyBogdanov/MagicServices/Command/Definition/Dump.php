@@ -122,7 +122,7 @@ class Dump extends Command implements
             $ui->warning( 'The magic_services.definitions.services configuration matches no eligible classes,' .
                 ' nothing can be detected.' );
 
-            return 1;
+            return 0;
 
         }
 

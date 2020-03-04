@@ -118,7 +118,7 @@ class Dump extends Command implements
         if ( ! $dumpParameters && ! $dumpServices ) {
 
             $ui->warning( 'Nothing to dump. Please call the command with --parameters or --services.' );
-            return 1;
+            return 0;
 
         }
 

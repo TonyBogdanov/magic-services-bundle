@@ -29,8 +29,6 @@ class Kernel extends BaseKernel {
 
     use MicroKernelTrait;
 
-    protected const CONFIG_EXTS = '.{php,xml,yaml,yml}';
-
     /**
      * @var string
      */

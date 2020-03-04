@@ -76,7 +76,7 @@ class Generate extends Command implements
             $ui->warning( 'The magic_services.definitions.services configuration matches no eligible classes,' .
                 ' nothing will be generated.' );
 
-            return 1;
+            return 0;
 
         }
 
