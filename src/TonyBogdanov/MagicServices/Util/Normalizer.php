@@ -46,18 +46,52 @@ class Normalizer {
      */
     public static function normalizeParameterName( string $name ): string {
 
-        $name = static::normalizeName( $name );
+        $chars = str_split( $name );
 
-        $result = '';
+        $index = 0;
+        $words = [];
 
-        while ( preg_match( '/^[A-Z][A-Z]/', $name ) ) {
+        while ( 0 < count( $chars ) ) {
 
-            $result .= strtolower( substr( $name, 0, 1 ) );
-            $name = substr( $name, 1 );
+            $char = array_shift( $chars );
+            if ( preg_match( '/^[^a-z0-9]$/', $char ) ) {
+
+                $index++;
+
+            }
+
+            if ( ! isset( $words[ $index ] ) ) {
+
+                $words[ $index ] = '';
+
+            }
+
+            $words[ $index ] .= $char;
 
         }
 
-        return lcfirst( $result . $name );
+        $combined = [];
+
+        while ( 0 < count( $words ) ) {
+
+            $word = array_shift( $words );
+            if ( preg_match( '/^[A-Z0-9]$/', $word ) ) {
+
+                if ( 0 < count( $combined ) && preg_match( '/^[A-Z0-9]+$/', $combined[ count( $combined ) - 1 ] ) ) {
+
+                    $combined[ count( $combined ) - 1 ] .= $word;
+                    continue;
+
+                }
+
+            }
+
+            $combined[] = $word;
+
+        }
+
+        $combined[0] = strtolower( $combined[0] );
+        return implode( '', $combined );
 
     }
 
