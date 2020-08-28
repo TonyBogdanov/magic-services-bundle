@@ -80,6 +80,7 @@ class CodeGenerator {
         $getter = $class
             ->addMethod( 'get' . $name )
             ->addComment( '@return ' . $baseType )
+            ->addComment( "\n" . '@codeCoverageIgnore' )
             ->setPublic()
             ->setReturnType( $type );
 
@@ -94,6 +95,7 @@ class CodeGenerator {
             ->addComment( '@required' )
             ->addComment( "\n" . '@param ' . $baseType . ' $' . Normalizer::normalizeParameterName( $name ) )
             ->addComment( "\n" . '@return $this' )
+            ->addComment( "\n" . '@codeCoverageIgnore' )
             ->setPublic();
 
         $setter->addParameter( Normalizer::normalizeParameterName( $name ) )->setType( $type );
