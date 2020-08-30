@@ -17,6 +17,8 @@ interface AnnotationReaderAwareInterface extends ServiceAwareInterface
 {
     /**
      * @return Reader
+     *
+     * @codeCoverageIgnore
      */
     public function getAnnotationReader(): Reader;
 
@@ -26,6 +28,8 @@ interface AnnotationReaderAwareInterface extends ServiceAwareInterface
      * @param Reader $annotationReader
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setAnnotationReader(Reader $annotationReader);
 }

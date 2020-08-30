@@ -17,6 +17,8 @@ interface CodeGeneratorAwareInterface extends ServiceAwareInterface
 {
     /**
      * @return CodeGenerator
+     *
+     * @codeCoverageIgnore
      */
     public function getCodeGenerator(): CodeGenerator;
 
@@ -26,6 +28,8 @@ interface CodeGeneratorAwareInterface extends ServiceAwareInterface
      * @param CodeGenerator $codeGenerator
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setCodeGenerator(CodeGenerator $codeGenerator);
 }

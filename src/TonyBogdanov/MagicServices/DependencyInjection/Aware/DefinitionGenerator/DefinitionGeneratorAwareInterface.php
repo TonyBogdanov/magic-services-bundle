@@ -17,6 +17,8 @@ interface DefinitionGeneratorAwareInterface extends ServiceAwareInterface
 {
     /**
      * @return DefinitionGenerator
+     *
+     * @codeCoverageIgnore
      */
     public function getDefinitionGenerator(): DefinitionGenerator;
 
@@ -26,6 +28,8 @@ interface DefinitionGeneratorAwareInterface extends ServiceAwareInterface
      * @param DefinitionGenerator $definitionGenerator
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setDefinitionGenerator(DefinitionGenerator $definitionGenerator);
 }

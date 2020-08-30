@@ -17,6 +17,8 @@ interface ParameterBagAwareInterface extends ServiceAwareInterface
 {
     /**
      * @return ParameterBagInterface
+     *
+     * @codeCoverageIgnore
      */
     public function getParameterBag(): ParameterBagInterface;
 
@@ -26,6 +28,8 @@ interface ParameterBagAwareInterface extends ServiceAwareInterface
      * @param ParameterBagInterface $parameterBag
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setParameterBag(ParameterBagInterface $parameterBag);
 }

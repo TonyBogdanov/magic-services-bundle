@@ -17,6 +17,8 @@ interface InspectorAwareInterface extends ServiceAwareInterface
 {
     /**
      * @return Inspector
+     *
+     * @codeCoverageIgnore
      */
     public function getInspector(): Inspector;
 
@@ -26,6 +28,8 @@ interface InspectorAwareInterface extends ServiceAwareInterface
      * @param Inspector $inspector
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setInspector(Inspector $inspector);
 }

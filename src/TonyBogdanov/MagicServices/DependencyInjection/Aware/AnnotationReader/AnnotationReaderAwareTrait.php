@@ -19,6 +19,8 @@ trait AnnotationReaderAwareTrait
 
     /**
      * @return Reader
+     *
+     * @codeCoverageIgnore
      */
     public function getAnnotationReader(): Reader
     {
@@ -31,6 +33,8 @@ trait AnnotationReaderAwareTrait
      * @param Reader $annotationReader
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setAnnotationReader(Reader $annotationReader)
     {

@@ -19,6 +19,8 @@ trait ParameterBagAwareTrait
 
     /**
      * @return ParameterBagInterface
+     *
+     * @codeCoverageIgnore
      */
     public function getParameterBag(): ParameterBagInterface
     {
@@ -31,6 +33,8 @@ trait ParameterBagAwareTrait
      * @param ParameterBagInterface $parameterBag
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setParameterBag(ParameterBagInterface $parameterBag)
     {

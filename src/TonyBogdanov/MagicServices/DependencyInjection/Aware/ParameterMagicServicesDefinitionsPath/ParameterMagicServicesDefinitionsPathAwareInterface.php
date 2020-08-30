@@ -16,6 +16,8 @@ interface ParameterMagicServicesDefinitionsPathAwareInterface extends ServiceAwa
 {
     /**
      * @return string
+     *
+     * @codeCoverageIgnore
      */
     public function getParameterMagicServicesDefinitionsPath(): string;
 
@@ -25,6 +27,8 @@ interface ParameterMagicServicesDefinitionsPathAwareInterface extends ServiceAwa
      * @param string $parameterMagicServicesDefinitionsPath
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setParameterMagicServicesDefinitionsPath(string $parameterMagicServicesDefinitionsPath);
 }

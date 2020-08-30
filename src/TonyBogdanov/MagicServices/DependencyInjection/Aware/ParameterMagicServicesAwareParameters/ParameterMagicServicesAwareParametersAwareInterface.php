@@ -16,6 +16,8 @@ interface ParameterMagicServicesAwareParametersAwareInterface extends ServiceAwa
 {
     /**
      * @return array
+     *
+     * @codeCoverageIgnore
      */
     public function getParameterMagicServicesAwareParameters(): array;
 
@@ -25,6 +27,8 @@ interface ParameterMagicServicesAwareParametersAwareInterface extends ServiceAwa
      * @param array $parameterMagicServicesAwareParameters
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setParameterMagicServicesAwareParameters(array $parameterMagicServicesAwareParameters);
 }

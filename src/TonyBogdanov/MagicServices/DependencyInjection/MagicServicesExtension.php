@@ -34,6 +34,8 @@ class MagicServicesExtension extends Extension {
 
         $config = $this->processConfiguration( new MagicServicesConfiguration(), $configs );
 
+        $container->setParameter( 'magic_services.definitions.autowire', $config['definitions']['autowire'] );
+        $container->setParameter( 'magic_services.definitions.autoconfigure', $config['definitions']['autoconfigure'] );
         $container->setParameter( 'magic_services.definitions.path', $config['definitions']['path'] );
         $container->setParameter( 'magic_services.definitions.services', $config['definitions']['services'] );
 

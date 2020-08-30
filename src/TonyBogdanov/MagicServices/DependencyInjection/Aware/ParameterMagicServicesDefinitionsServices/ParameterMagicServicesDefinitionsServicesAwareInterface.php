@@ -16,6 +16,8 @@ interface ParameterMagicServicesDefinitionsServicesAwareInterface extends Servic
 {
     /**
      * @return array
+     *
+     * @codeCoverageIgnore
      */
     public function getParameterMagicServicesDefinitionsServices(): array;
 
@@ -25,6 +27,8 @@ interface ParameterMagicServicesDefinitionsServicesAwareInterface extends Servic
      * @param array $parameterMagicServicesDefinitionsServices
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setParameterMagicServicesDefinitionsServices(array $parameterMagicServicesDefinitionsServices);
 }

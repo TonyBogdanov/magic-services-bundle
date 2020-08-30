@@ -17,6 +17,8 @@ interface AwareGeneratorAwareInterface extends ServiceAwareInterface
 {
     /**
      * @return AwareGenerator
+     *
+     * @codeCoverageIgnore
      */
     public function getAwareGenerator(): AwareGenerator;
 
@@ -26,6 +28,8 @@ interface AwareGeneratorAwareInterface extends ServiceAwareInterface
      * @param AwareGenerator $awareGenerator
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setAwareGenerator(AwareGenerator $awareGenerator);
 }

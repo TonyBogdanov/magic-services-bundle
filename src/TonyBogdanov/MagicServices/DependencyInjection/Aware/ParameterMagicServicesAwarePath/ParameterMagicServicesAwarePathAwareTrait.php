@@ -17,6 +17,8 @@ trait ParameterMagicServicesAwarePathAwareTrait
 
     /**
      * @return string
+     *
+     * @codeCoverageIgnore
      */
     public function getParameterMagicServicesAwarePath(): string
     {
@@ -29,6 +31,8 @@ trait ParameterMagicServicesAwarePathAwareTrait
      * @param string $parameterMagicServicesAwarePath
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setParameterMagicServicesAwarePath(string $parameterMagicServicesAwarePath)
     {

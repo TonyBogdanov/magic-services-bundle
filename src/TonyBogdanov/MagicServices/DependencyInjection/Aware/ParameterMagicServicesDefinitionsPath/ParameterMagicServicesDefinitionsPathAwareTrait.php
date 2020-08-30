@@ -17,6 +17,8 @@ trait ParameterMagicServicesDefinitionsPathAwareTrait
 
     /**
      * @return string
+     *
+     * @codeCoverageIgnore
      */
     public function getParameterMagicServicesDefinitionsPath(): string
     {
@@ -29,6 +31,8 @@ trait ParameterMagicServicesDefinitionsPathAwareTrait
      * @param string $parameterMagicServicesDefinitionsPath
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setParameterMagicServicesDefinitionsPath(string $parameterMagicServicesDefinitionsPath)
     {

@@ -19,6 +19,8 @@ trait CodeGeneratorAwareTrait
 
     /**
      * @return CodeGenerator
+     *
+     * @codeCoverageIgnore
      */
     public function getCodeGenerator(): CodeGenerator
     {
@@ -31,6 +33,8 @@ trait CodeGeneratorAwareTrait
      * @param CodeGenerator $codeGenerator
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setCodeGenerator(CodeGenerator $codeGenerator)
     {

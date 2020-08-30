@@ -19,6 +19,8 @@ trait DefinitionGeneratorAwareTrait
 
     /**
      * @return DefinitionGenerator
+     *
+     * @codeCoverageIgnore
      */
     public function getDefinitionGenerator(): DefinitionGenerator
     {
@@ -31,6 +33,8 @@ trait DefinitionGeneratorAwareTrait
      * @param DefinitionGenerator $definitionGenerator
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setDefinitionGenerator(DefinitionGenerator $definitionGenerator)
     {

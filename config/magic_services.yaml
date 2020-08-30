@@ -36,12 +36,13 @@ services:
             - [setInspector, ['@TonyBogdanov\MagicServices\Inspector']]
             - [setDefinitionGenerator, ['@TonyBogdanov\MagicServices\DefinitionGenerator']]
             - [setParameterMagicServicesDefinitionsPath, ['%magic_services.definitions.path%']]
+            - [setParameterMagicServicesDefinitionsAutowire, ['%magic_services.definitions.autowire%']]
+            - [setParameterMagicServicesDefinitionsAutoconfigure, ['%magic_services.definitions.autoconfigure%']]
     TonyBogdanov\MagicServices\DefinitionGenerator:
         class: TonyBogdanov\MagicServices\DefinitionGenerator
         calls:
             - [setInspector, ['@TonyBogdanov\MagicServices\Inspector']]
             - [setAwareGenerator, ['@TonyBogdanov\MagicServices\AwareGenerator']]
-            - [setParameterMagicServicesDefinitionsPath, ['%magic_services.definitions.path%']]
     TonyBogdanov\MagicServices\Inspector:
         class: TonyBogdanov\MagicServices\Inspector
         calls:

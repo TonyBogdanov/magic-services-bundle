@@ -16,6 +16,8 @@ interface ParameterMagicServicesAwareNamespaceAwareInterface extends ServiceAwar
 {
     /**
      * @return string
+     *
+     * @codeCoverageIgnore
      */
     public function getParameterMagicServicesAwareNamespace(): string;
 
@@ -25,6 +27,8 @@ interface ParameterMagicServicesAwareNamespaceAwareInterface extends ServiceAwar
      * @param string $parameterMagicServicesAwareNamespace
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setParameterMagicServicesAwareNamespace(string $parameterMagicServicesAwareNamespace);
 }

@@ -14,6 +14,8 @@ Example:
 ```yaml
 magic_services:
   definitions:
+    autowire: false
+    autoconfigure: false
     path: '%kernel.project_dir%/config/magic_services.yaml'
     services:
       - '%kernel.project_dir%/src'
@@ -34,6 +36,20 @@ magic_services:
         name: 'Logger'
       - 'Doctrine\ORM\EntityManager'
 ```
+
+`definitions.autowire`
+
+Set this to `TRUE` to generate a `_defaults.autowire: true` entry in the generated
+service definitions.
+
+Defaults to: `FALSE`.
+
+`definitions.autoconfigure`
+
+Set this to `TRUE` to generate a `_defaults.autoconfigure: true` entry in the
+generated service definitions.
+
+Defaults to: `FALSE`.
 
 `definitions.path`
 

@@ -34,10 +34,27 @@ class MagicServicesConfiguration implements ConfigurationInterface {
         $stringValidator = function ( $value ) { return ! is_string( $value ); };
         $stringError = 'Value must be a string.';
 
+        $booleanValidator = function ( $value ) { return ! is_bool( $value ); };
+        $booleanError = 'Value must be a boolean.';
+
         $root
             ->arrayNode( 'definitions' )
                 ->addDefaultsIfNotSet()
                 ->children()
+                    ->scalarNode( 'autowire' )
+                        ->defaultValue( false )
+                        ->validate()
+                            ->ifTrue( $booleanValidator )
+                            ->thenInvalid( $booleanError )
+                        ->end()
+                    ->end()
+                    ->scalarNode( 'autoconfigure' )
+                        ->defaultValue( false )
+                        ->validate()
+                            ->ifTrue( $booleanValidator )
+                            ->thenInvalid( $booleanError )
+                        ->end()
+                    ->end()
                     ->scalarNode( 'path' )
                         ->defaultValue( '%kernel.project_dir%/config/magic_services.yaml' )
                         ->validate()

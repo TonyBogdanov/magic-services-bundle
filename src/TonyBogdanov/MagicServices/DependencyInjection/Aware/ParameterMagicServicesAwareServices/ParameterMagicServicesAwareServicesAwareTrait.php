@@ -17,6 +17,8 @@ trait ParameterMagicServicesAwareServicesAwareTrait
 
     /**
      * @return array
+     *
+     * @codeCoverageIgnore
      */
     public function getParameterMagicServicesAwareServices(): array
     {
@@ -29,6 +31,8 @@ trait ParameterMagicServicesAwareServicesAwareTrait
      * @param array $parameterMagicServicesAwareServices
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setParameterMagicServicesAwareServices(array $parameterMagicServicesAwareServices)
     {

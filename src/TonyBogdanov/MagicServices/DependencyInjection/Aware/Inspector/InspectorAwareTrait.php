@@ -19,6 +19,8 @@ trait InspectorAwareTrait
 
     /**
      * @return Inspector
+     *
+     * @codeCoverageIgnore
      */
     public function getInspector(): Inspector
     {
@@ -31,6 +33,8 @@ trait InspectorAwareTrait
      * @param Inspector $inspector
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setInspector(Inspector $inspector)
     {

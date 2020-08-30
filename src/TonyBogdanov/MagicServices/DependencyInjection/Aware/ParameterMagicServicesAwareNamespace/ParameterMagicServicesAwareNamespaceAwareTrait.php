@@ -17,6 +17,8 @@ trait ParameterMagicServicesAwareNamespaceAwareTrait
 
     /**
      * @return string
+     *
+     * @codeCoverageIgnore
      */
     public function getParameterMagicServicesAwareNamespace(): string
     {
@@ -29,6 +31,8 @@ trait ParameterMagicServicesAwareNamespaceAwareTrait
      * @param string $parameterMagicServicesAwareNamespace
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setParameterMagicServicesAwareNamespace(string $parameterMagicServicesAwareNamespace)
     {

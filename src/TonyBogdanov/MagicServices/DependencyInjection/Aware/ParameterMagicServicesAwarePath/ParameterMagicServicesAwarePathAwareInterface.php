@@ -16,6 +16,8 @@ interface ParameterMagicServicesAwarePathAwareInterface extends ServiceAwareInte
 {
     /**
      * @return string
+     *
+     * @codeCoverageIgnore
      */
     public function getParameterMagicServicesAwarePath(): string;
 
@@ -25,6 +27,8 @@ interface ParameterMagicServicesAwarePathAwareInterface extends ServiceAwareInte
      * @param string $parameterMagicServicesAwarePath
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setParameterMagicServicesAwarePath(string $parameterMagicServicesAwarePath);
 }

@@ -9,6 +9,7 @@
 
 namespace TonyBogdanov\MagicServices\Command\Definition;
 
+use ReflectionException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,6 +21,10 @@ use TonyBogdanov\MagicServices\DependencyInjection\Aware\DefinitionGenerator\Def
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\DefinitionGenerator\DefinitionGeneratorAwareTrait;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareInterface;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesDefinitionsAutoconfigure\ParameterMagicServicesDefinitionsAutoconfigureAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesDefinitionsAutoconfigure\ParameterMagicServicesDefinitionsAutoconfigureAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesDefinitionsAutowire\ParameterMagicServicesDefinitionsAutowireAwareInterface;
+use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesDefinitionsAutowire\ParameterMagicServicesDefinitionsAutowireAwareTrait;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesDefinitionsPath\ParameterMagicServicesDefinitionsPathAwareInterface;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesDefinitionsPath\ParameterMagicServicesDefinitionsPathAwareTrait;
 use TonyBogdanov\MagicServices\Object\DefinitionObject;
@@ -34,12 +39,16 @@ use TonyBogdanov\MagicServices\Object\DefinitionObject;
 class Generate extends Command implements
     InspectorAwareInterface,
     DefinitionGeneratorAwareInterface,
-    ParameterMagicServicesDefinitionsPathAwareInterface
+    ParameterMagicServicesDefinitionsPathAwareInterface,
+    ParameterMagicServicesDefinitionsAutowireAwareInterface,
+    ParameterMagicServicesDefinitionsAutoconfigureAwareInterface
 {
     
     use InspectorAwareTrait;
     use DefinitionGeneratorAwareTrait;
     use ParameterMagicServicesDefinitionsPathAwareTrait;
+    use ParameterMagicServicesDefinitionsAutowireAwareTrait;
+    use ParameterMagicServicesDefinitionsAutoconfigureAwareTrait;
 
     /**
      * @return string|null
@@ -58,20 +67,88 @@ class Generate extends Command implements
     }
 
     /**
+     * @param array $definitions
+     * @param bool $autoWire
+     * @param bool $autoConfigure
+     *
+     * @return $this
+     */
+    protected function injectDefaults( array & $definitions, bool $autoWire, bool $autoConfigure ): self {
+
+        if ( ! $autoWire && ! $autoConfigure ) {
+
+            return $this;
+
+        }
+
+        $definitions['_defaults'] = [];
+
+        if ( $autoWire ) {
+
+            $definitions['_defaults']['autowire'] = true;
+
+        }
+
+        if ( $autoConfigure ) {
+
+            $definitions['_defaults']['autoconfigure'] = true;
+
+        }
+
+        return $this;
+
+    }
+
+    /**
+     * @param array $definitions
+     * @param array $services
+     *
+     * @return $this
+     */
+    protected function injectServiceDefinitions( array & $definitions, array $services ): self {
+
+        $services = array_map( function ( DefinitionObject $object ): array {
+
+            return [
+
+                'name' => $object->getReflection()->getName(),
+                'definition' => $this->getDefinitionGenerator()->generate( $object ),
+
+            ];
+
+        }, $services );
+
+        $services = array_reduce( $services, function ( array $dump, array $item ): array {
+
+            $dump[ $item['name'] ] = $item['definition'];
+            return $dump;
+
+        }, [] );
+
+        $definitions = array_merge( $definitions, $services );
+        return $this;
+
+    }
+
+    /**
      * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function execute( InputInterface $input, OutputInterface $output ): int {
 
         $ui = new SymfonyStyle( $input, $output );
 
-        $ui->writeln( 'Scanning services' );
-        $definitions = $this->getInspector()->resolveDefinitions( false );
+        $ui->writeln( 'Analyzing settings' );
+        $autoWire = $this->getParameterMagicServicesDefinitionsAutowire();
+        $autoConfigure = $this->getParameterMagicServicesDefinitionsAutoconfigure();
 
-        if ( 0 === count( $definitions ) ) {
+        $ui->writeln( 'Scanning services' );
+        $services = $this->getInspector()->resolveDefinitions( false );
+
+        if ( 0 === count( $services ) ) {
 
             $ui->warning( 'The magic_services.definitions.services configuration matches no eligible classes,' .
                 ' nothing will be generated.' );
@@ -82,24 +159,15 @@ class Generate extends Command implements
 
         $ui->writeln( 'Generating definitions' );
 
+        $definitions = [];
+
+        $this->injectDefaults( $definitions, $autoWire, $autoConfigure );
+        $this->injectServiceDefinitions( $definitions, $services );
+
         ( new Filesystem() )->dumpFile(
 
             $this->getParameterMagicServicesDefinitionsPath(),
-            Yaml::dump( [ 'services' => array_reduce( array_map( function ( DefinitionObject $object ): array {
-
-                return [
-
-                    'name' => $object->getReflection()->getName(),
-                    'definition' => $this->getDefinitionGenerator()->generate( $object ),
-
-                ];
-
-            }, $definitions ), function ( array $dump, array $item ): array {
-
-                $dump[ $item['name'] ] = $item['definition'];
-                return $dump;
-
-            }, [] ) ], 4 )
+            Yaml::dump( [ 'services' => $definitions ], 4 )
 
         );
 

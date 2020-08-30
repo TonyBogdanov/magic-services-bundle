@@ -19,6 +19,8 @@ trait AwareGeneratorAwareTrait
 
     /**
      * @return AwareGenerator
+     *
+     * @codeCoverageIgnore
      */
     public function getAwareGenerator(): AwareGenerator
     {
@@ -31,6 +33,8 @@ trait AwareGeneratorAwareTrait
      * @param AwareGenerator $awareGenerator
      *
      * @return $this
+     *
+     * @codeCoverageIgnore
      */
     public function setAwareGenerator(AwareGenerator $awareGenerator)
     {
