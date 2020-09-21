@@ -9,6 +9,7 @@
 
 namespace TonyBogdanov\MagicServices\Command\Aware;
 
+use Symfony\Bundle\FrameworkBundle\Command\BuildDebugContainerTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,6 +20,7 @@ use TonyBogdanov\MagicServices\DependencyInjection\Aware\AwareGenerator\AwareGen
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\AwareGenerator\AwareGeneratorAwareTrait;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareInterface;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Singleton\ContainerBuilderSingleton;
 use TonyBogdanov\MagicServices\Object\AwareObject;
 
 /**
@@ -32,7 +34,8 @@ class Generate extends Command implements
     InspectorAwareInterface,
     AwareGeneratorAwareInterface
 {
-    
+
+    use BuildDebugContainerTrait;
     use InspectorAwareTrait;
     use AwareGeneratorAwareTrait;
 
@@ -73,8 +76,9 @@ class Generate extends Command implements
 
         $this->setDescription( 'Generates interfaces & traits for detected <comment>aware</comment> objects based' .
             ' on the configured parameters & services.' )
-            ->addOption( 'parameters', 'p', InputOption::VALUE_NONE, 'Generate for parameters.' )
-            ->addOption( 'services', 's', InputOption::VALUE_NONE, 'Generate for services.' );;
+             ->addOption( 'parameters', 'p', InputOption::VALUE_NONE, 'Generate for parameters.' )
+             ->addOption( 'tags', 't', InputOption::VALUE_NONE, 'Generate for tags.' )
+             ->addOption( 'services', 's', InputOption::VALUE_NONE, 'Generate for services.' );;
 
     }
 
@@ -86,20 +90,26 @@ class Generate extends Command implements
      */
     protected function execute( InputInterface $input, OutputInterface $output ): int {
 
+        ContainerBuilderSingleton::setContainerBuilder( $this->getContainerBuilder() );
+
         $ui = new SymfonyStyle( $input, $output );
 
         $generateParameters = $input->getOption( 'parameters' );
+        $generateTags = $input->getOption( 'tags' );
         $generateServices = $input->getOption( 'services' );
 
-        if ( ! $generateParameters && ! $generateServices ) {
+        if ( ! $generateParameters && ! $generateTags && ! $generateServices ) {
 
-            $ui->error( 'Nothing to generate. Please call the command with --parameters or --services.' );
+            $ui->error( 'Nothing to generate. Please call the command with --parameters, --tags or --services.' );
             return 1;
 
         }
 
         $generateParameters && $ui->writeln( 'Scanning aware parameters' );
         $parameters = $generateParameters ? $this->getInspector()->resolveAwareParameters() : [];
+
+        $generateTags && $ui->writeln( 'Scanning aware tags' );
+        $tags = $generateTags ? $this->getInspector()->resolveAwareTags() : [];
 
         $generateServices && $ui->writeln( 'Scanning aware services' );
         $services = $generateServices ? $this->getInspector()->resolveAwareServices() : [];
@@ -108,6 +118,12 @@ class Generate extends Command implements
 
             $ui->warning( 'The magic_services.aware.parameters configuration matches no parameters, nothing' .
                 ' will be generated.' );
+
+        }
+
+        if ( $generateTags && 0 === count( $tags ) ) {
+
+            $ui->warning( 'The magic_services.aware.tags configuration matches no tags, nothing will be generated.' );
 
         }
 
@@ -121,6 +137,12 @@ class Generate extends Command implements
         if ( $generateParameters && 0 < count( $parameters ) ) {
 
             $this->generate( $ui, 'parameters', $parameters );
+
+        }
+
+        if ( $generateTags && 0 < count( $tags ) ) {
+
+            $this->generate( $ui, 'tags', $tags );
 
         }
 

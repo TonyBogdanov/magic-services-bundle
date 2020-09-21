@@ -49,5 +49,6 @@ services:
             - [setAnnotationReader, ['@Doctrine\Common\Annotations\Reader']]
             - [setParameterBag, ['@Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface']]
             - [setParameterMagicServicesAwareParameters, ['%magic_services.aware.parameters%']]
+            - [setParameterMagicServicesAwareTags, ['%magic_services.aware.tags%']]
             - [setParameterMagicServicesAwareServices, ['%magic_services.aware.services%']]
             - [setParameterMagicServicesDefinitionsServices, ['%magic_services.definitions.services%']]

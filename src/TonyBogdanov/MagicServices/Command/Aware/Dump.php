@@ -9,6 +9,7 @@
 
 namespace TonyBogdanov\MagicServices\Command\Aware;
 
+use Symfony\Bundle\FrameworkBundle\Command\BuildDebugContainerTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,6 +20,7 @@ use TonyBogdanov\MagicServices\DependencyInjection\Aware\AwareGenerator\AwareGen
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\AwareGenerator\AwareGeneratorAwareTrait;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareInterface;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Singleton\ContainerBuilderSingleton;
 use TonyBogdanov\MagicServices\Object\AwareObject;
 use TonyBogdanov\MagicServices\Util\Normalizer;
 
@@ -34,6 +36,7 @@ class Dump extends Command implements
     AwareGeneratorAwareInterface
 {
 
+    use BuildDebugContainerTrait;
     use InspectorAwareTrait;
     use AwareGeneratorAwareTrait;
 
@@ -98,6 +101,7 @@ class Dump extends Command implements
             ->setDescription( 'Dumps a list of detected <comment>aware</comment> objects based on the configured' .
                 ' parameters & services.' )
             ->addOption( 'parameters', 'p', InputOption::VALUE_NONE, 'Dump parameters.' )
+            ->addOption( 'tags', 't', InputOption::VALUE_NONE, 'Dump tags.' )
             ->addOption( 'services', 's', InputOption::VALUE_NONE, 'Dump services.' );
 
     }
@@ -110,20 +114,26 @@ class Dump extends Command implements
      */
     protected function execute( InputInterface $input, OutputInterface $output ): int {
 
+        ContainerBuilderSingleton::setContainerBuilder( $this->getContainerBuilder() );
+
         $ui = new SymfonyStyle( $input, $output );
 
         $dumpParameters = $input->getOption( 'parameters' );
+        $dumpTags = $input->getOption( 'tags' );
         $dumpServices = $input->getOption( 'services' );
 
-        if ( ! $dumpParameters && ! $dumpServices ) {
+        if ( ! $dumpParameters && ! $dumpTags && ! $dumpServices ) {
 
-            $ui->warning( 'Nothing to dump. Please call the command with --parameters or --services.' );
+            $ui->warning( 'Nothing to dump. Please call the command with --parameters, --tags or --services.' );
             return 0;
 
         }
 
         $dumpParameters && $ui->writeln( 'Scanning aware parameters' );
         $parameters = $dumpParameters ? $this->getInspector()->resolveAwareParameters() : [];
+
+        $dumpTags && $ui->writeln( 'Scanning aware tags' );
+        $tags = $dumpTags ? $this->getInspector()->resolveAwareTags() : [];
 
         $dumpServices && $ui->writeln( 'Scanning aware services' );
         $services = $dumpServices ? $this->getInspector()->resolveAwareServices() : [];
@@ -132,6 +142,12 @@ class Dump extends Command implements
 
             $ui->warning( 'The magic_services.aware.parameters configuration matches no parameters, nothing' .
                 ' can be detected.' );
+
+        }
+
+        if ( $dumpTags && 0 === count( $tags ) ) {
+
+            $ui->warning( 'The magic_services.aware.tags configuration matches no tags, nothing can be detected.' );
 
         }
 
@@ -145,6 +161,12 @@ class Dump extends Command implements
         if ( $dumpParameters && 0 < count( $parameters ) ) {
 
             $this->listObjects( $ui, 'Parameters', $parameters );
+
+        }
+
+        if ( $dumpTags && 0 < count( $tags ) ) {
+
+            $this->listObjects( $ui, 'Tags', $tags );
 
         }
 

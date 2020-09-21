@@ -9,6 +9,10 @@
 
 namespace TonyBogdanov\MagicServices\Object;
 
+use ReflectionClass;
+use ReflectionException;
+use ReflectionNamedType;
+use ReflectionParameter;
 use TonyBogdanov\MagicServices\Annotation\MagicService;
 use TonyBogdanov\MagicServices\Aware\ServiceAwareInterface;
 use TonyBogdanov\Memoize\Traits\MemoizeTrait;
@@ -23,22 +27,22 @@ class DefinitionObject {
     use MemoizeTrait;
 
     /**
-     * @var \ReflectionClass
+     * @var ReflectionClass
      */
-    protected $reflection;
+    protected ReflectionClass $reflection;
 
     /**
      * @var MagicService|null
      */
-    protected $annotation;
+    protected ?MagicService $annotation;
 
     /**
      * DefinitionObject constructor.
      *
-     * @param \ReflectionClass $reflection
+     * @param ReflectionClass $reflection
      * @param MagicService|null $annotation
      */
-    public function __construct( \ReflectionClass $reflection, ?MagicService $annotation ) {
+    public function __construct( ReflectionClass $reflection, ?MagicService $annotation ) {
 
         $this
             ->setReflection( $reflection )
@@ -100,7 +104,6 @@ class DefinitionObject {
 
             $result = [];
 
-            /** @var \ReflectionClass $interface */
             foreach ( $this->getReflection()->getInterfaces() as $interface ) {
 
                 if (
@@ -126,7 +129,7 @@ class DefinitionObject {
 
     /**
      * @return array
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getConstructorDependencies(): array {
 
@@ -136,9 +139,9 @@ class DefinitionObject {
 
         }
 
-        return array_map( function ( \ReflectionParameter $parameter ): array {
+        return array_map( function ( ReflectionParameter $parameter ): array {
 
-            /** @var \ReflectionNamedType $type */
+            /** @var ReflectionNamedType $type */
             $type = $parameter->getType();
 
             return [
@@ -153,20 +156,20 @@ class DefinitionObject {
     }
 
     /**
-     * @return \ReflectionClass
+     * @return ReflectionClass
      */
-    public function getReflection(): \ReflectionClass {
+    public function getReflection(): ReflectionClass {
 
         return $this->reflection;
 
     }
 
     /**
-     * @param \ReflectionClass $reflection
+     * @param ReflectionClass $reflection
      *
      * @return DefinitionObject
      */
-    public function setReflection( \ReflectionClass $reflection ): DefinitionObject {
+    public function setReflection( ReflectionClass $reflection ): DefinitionObject {
 
         $this->reflection = $reflection;
         return $this;

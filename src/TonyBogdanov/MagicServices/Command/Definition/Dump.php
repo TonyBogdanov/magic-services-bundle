@@ -9,6 +9,8 @@
 
 namespace TonyBogdanov\MagicServices\Command\Definition;
 
+use ReflectionException;
+use Symfony\Bundle\FrameworkBundle\Command\BuildDebugContainerTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,6 +21,7 @@ use TonyBogdanov\MagicServices\DependencyInjection\Aware\DefinitionGenerator\Def
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\DefinitionGenerator\DefinitionGeneratorAwareTrait;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareInterface;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Singleton\ContainerBuilderSingleton;
 use TonyBogdanov\MagicServices\Object\DefinitionObject;
 
 /**
@@ -33,6 +36,7 @@ class Dump extends Command implements
     DefinitionGeneratorAwareInterface
 {
 
+    use BuildDebugContainerTrait;
     use InspectorAwareTrait;
     use DefinitionGeneratorAwareTrait;
 
@@ -106,9 +110,11 @@ class Dump extends Command implements
      * @param OutputInterface $output
      *
      * @return int
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function execute( InputInterface $input, OutputInterface $output ): int {
+
+        ContainerBuilderSingleton::setContainerBuilder( $this->getContainerBuilder() );
 
         $ui = new SymfonyStyle( $input, $output );
 

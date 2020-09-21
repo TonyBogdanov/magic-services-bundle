@@ -12,11 +12,13 @@ namespace TonyBogdanov\MagicServices;
 use ReflectionClass;
 use ReflectionException;
 use RuntimeException;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use TonyBogdanov\MagicServices\Aware\ServiceAwareInterface;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\AwareGenerator\AwareGeneratorAwareInterface;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\AwareGenerator\AwareGeneratorAwareTrait;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareInterface;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Singleton\ContainerBuilderSingleton;
 use TonyBogdanov\MagicServices\Object\AwareObject;
 use TonyBogdanov\MagicServices\Object\DefinitionObject;
 use TonyBogdanov\MagicServices\Util\Normalizer;
@@ -78,6 +80,7 @@ class DefinitionGenerator implements
             return array_merge(
 
                 $this->getInspector()->resolveAwareParameters(),
+                $this->getInspector()->resolveAwareTags(),
                 $this->getInspector()->resolveAwareServices()
 
             );

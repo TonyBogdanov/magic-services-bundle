@@ -10,6 +10,7 @@
 namespace TonyBogdanov\MagicServices\Command\Definition;
 
 use ReflectionException;
+use Symfony\Bundle\FrameworkBundle\Command\BuildDebugContainerTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -27,6 +28,7 @@ use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesD
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesDefinitionsAutowire\ParameterMagicServicesDefinitionsAutowireAwareTrait;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesDefinitionsPath\ParameterMagicServicesDefinitionsPathAwareInterface;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\ParameterMagicServicesDefinitionsPath\ParameterMagicServicesDefinitionsPathAwareTrait;
+use TonyBogdanov\MagicServices\DependencyInjection\Singleton\ContainerBuilderSingleton;
 use TonyBogdanov\MagicServices\Object\DefinitionObject;
 
 /**
@@ -43,7 +45,8 @@ class Generate extends Command implements
     ParameterMagicServicesDefinitionsAutowireAwareInterface,
     ParameterMagicServicesDefinitionsAutoconfigureAwareInterface
 {
-    
+
+    use BuildDebugContainerTrait;
     use InspectorAwareTrait;
     use DefinitionGeneratorAwareTrait;
     use ParameterMagicServicesDefinitionsPathAwareTrait;
@@ -138,6 +141,8 @@ class Generate extends Command implements
      * @throws ReflectionException
      */
     protected function execute( InputInterface $input, OutputInterface $output ): int {
+
+        ContainerBuilderSingleton::setContainerBuilder( $this->getContainerBuilder() );
 
         $ui = new SymfonyStyle( $input, $output );
 

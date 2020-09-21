@@ -9,6 +9,7 @@
 
 namespace TonyBogdanov\MagicServices\DependencyInjection;
 
+use Exception;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -25,7 +26,7 @@ class MagicServicesExtension extends Extension {
      * @param array $configs
      * @param ContainerBuilder $container
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function load( array $configs, ContainerBuilder $container ) {
 
@@ -42,6 +43,7 @@ class MagicServicesExtension extends Extension {
         $container->setParameter( 'magic_services.aware.path', $config['aware']['path'] );
         $container->setParameter( 'magic_services.aware.namespace', $config['aware']['namespace'] );
         $container->setParameter( 'magic_services.aware.parameters', $config['aware']['parameters'] );
+        $container->setParameter( 'magic_services.aware.tags', $config['aware']['tags'] );
         $container->setParameter( 'magic_services.aware.services', $config['aware']['services'] );
 
     }

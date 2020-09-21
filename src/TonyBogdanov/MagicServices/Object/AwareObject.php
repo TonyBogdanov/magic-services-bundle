@@ -27,7 +27,7 @@ class AwareObject {
     protected $type;
 
     /**
-     * @var string
+     * @var string|object
      */
     protected $dependency;
 
@@ -36,9 +36,9 @@ class AwareObject {
      *
      * @param string $name
      * @param string $type
-     * @param string $dependency
+     * @param string|object $dependency
      */
-    public function __construct( string $name, string $type, string $dependency ) {
+    public function __construct( string $name, string $type, $dependency ) {
 
         $this
             ->setName( $name )
@@ -99,20 +99,20 @@ class AwareObject {
     }
 
     /**
-     * @return string
+     * @return object|string
      */
-    public function getDependency(): string {
+    public function getDependency() {
 
         return $this->dependency;
 
     }
 
     /**
-     * @param string $dependency
+     * @param object|string $dependency
      *
-     * @return AwareObject
+     * @return $this
      */
-    public function setDependency( string $dependency ): AwareObject {
+    public function setDependency( $dependency ) {
 
         $this->dependency = $dependency;
         return $this;

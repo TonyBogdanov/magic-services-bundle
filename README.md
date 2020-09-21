@@ -27,6 +27,11 @@ magic_services:
         name: 'ParameterKernel$1'
       - regex: '/^app\.(.+)$/i'
         name: 'ParameterApp$1'
+    tags:
+      - regex: '/^twig\.(.+)$/i'
+        name: 'TagKernel$1'
+      - regex: '/^app\.(.+)$/i'
+        name: 'TagApp$1'
     services:
       - type: 'Doctrine\Common\Annotations\Reader'
         service: '@Doctrine\Common\Annotations\Reader'
@@ -105,6 +110,42 @@ Defaults to: `[]`
 `aware.parameters.*.regex`
 
 A regular expression for matching one or more parameters defined in the container, to
+generate *aware* interfaces for.
+
+Required, no default.
+
+---
+
+`aware.parameters.*.name`
+
+An optional name for the generated *aware* interface.
+
+You can also use capturing groups from the regular expression to insert matched
+parts here.
+
+If this is omitted, a name will be automatically selected by prepending the name of
+the matched parameter with a `parameter` prefix.
+
+For example, for the `kernel.project_dir` parameter, the following name will be used:
+`ParameterKernelProject_Dir`.
+
+The **final** *aware* name will be normalized (see Normalization).
+
+---
+
+`aware.tags`
+
+An array of definitions for generating *aware* interfaces from tagged services.
+Each entry must be an array, or when automatic generation of optional settings is
+sufficient, you can also use a string (will be used as the `regex` sub-setting).
+
+Defaults to: `[]`
+
+---
+
+`aware.tags.*.regex`
+
+A regular expression for matching one or more tags defined in the container, to
 generate *aware* interfaces for.
 
 Required, no default.
