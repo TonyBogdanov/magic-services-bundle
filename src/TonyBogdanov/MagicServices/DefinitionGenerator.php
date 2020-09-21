@@ -246,7 +246,7 @@ class DefinitionGenerator implements
 
                 'class' => $object->getName(),
                 'tags' => $object->getTags(),
-                'arguments' => array_map( function ( AwareObject $object ): string {
+                'arguments' => array_map( function ( AwareObject $object ) {
 
                     return $object->getDependency();
 

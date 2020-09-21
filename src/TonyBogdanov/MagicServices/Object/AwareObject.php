@@ -9,6 +9,8 @@
 
 namespace TonyBogdanov\MagicServices\Object;
 
+use Symfony\Component\Yaml\Tag\TaggedValue;
+
 /**
  * Class AwareObject
  *
@@ -19,12 +21,12 @@ class AwareObject {
     /**
      * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * @var string
      */
-    protected $type;
+    protected string $type;
 
     /**
      * @var string|object
@@ -52,7 +54,17 @@ class AwareObject {
      */
     public function __toString(): string {
 
-        return implode( ',', [ $this->getName(), $this->getType(), $this->getDependency() ] );
+        $dependency = $this->getDependency();
+
+        return implode( ',', [
+
+            $this->getName(),
+            $this->getType(),
+            $dependency instanceof TaggedValue ?
+                '!' . $dependency->getTag() . ' ' . $dependency->getValue() :
+                $dependency
+
+        ] );
 
     }
 
