@@ -10,13 +10,13 @@
 namespace TonyBogdanov\MagicServices\Command\Definition;
 
 use ReflectionException;
-use Symfony\Bundle\FrameworkBundle\Command\BuildDebugContainerTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TonyBogdanov\MagicServices\Annotation\MagicService;
+use TonyBogdanov\MagicServices\Command\Traits\DebugContainerTrait;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\DefinitionGenerator\DefinitionGeneratorAwareInterface;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\DefinitionGenerator\DefinitionGeneratorAwareTrait;
 use TonyBogdanov\MagicServices\DependencyInjection\Aware\Inspector\InspectorAwareInterface;
@@ -36,7 +36,7 @@ class Dump extends Command implements
     DefinitionGeneratorAwareInterface
 {
 
-    use BuildDebugContainerTrait;
+    use DebugContainerTrait;
     use InspectorAwareTrait;
     use DefinitionGeneratorAwareTrait;
 
