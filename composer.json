@@ -24,7 +24,7 @@
         "symfony/filesystem": "4.*|5.*",
         "doctrine/annotations": "1.*",
         "symfony/finder": "4.*|5.*",
-        "tonybogdanov/memoize": "^2.0",
+        "tonybogdanov/memoize": "^2.0.1",
         "symfony/yaml": "4.*|5.*"
     },
     "require-dev": {
