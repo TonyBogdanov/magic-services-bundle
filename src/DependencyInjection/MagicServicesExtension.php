@@ -30,7 +30,7 @@ class MagicServicesExtension extends Extension {
      */
     public function load( array $configs, ContainerBuilder $container ) {
 
-        $loader = new YamlFileLoader( $container, new FileLocator( __DIR__ . '/../../../../config' ) );
+        $loader = new YamlFileLoader( $container, new FileLocator( __DIR__ . '/../../config' ) );
         $loader->load( 'magic_services.yaml' );
 
         $config = $this->processConfiguration( new MagicServicesConfiguration(), $configs );
