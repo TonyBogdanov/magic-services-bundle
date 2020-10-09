@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4b99127ce8f2b7cfcc66e5113a386d8b",
+    "content-hash": "6c74919d23c375b037bc89770c11fc2a",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -2638,25 +2638,28 @@
         },
         {
             "name": "tonybogdanov/memoize",
-            "version": "v1.0",
+            "version": "v2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TonyBogdanov/memoize.git",
-                "reference": "3032a26d139a56fc997ce29409a4b4e1a9619161"
+                "reference": "4c26f3dbb3c4e07c67338a9c07a24b305350a83e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TonyBogdanov/memoize/zipball/3032a26d139a56fc997ce29409a4b4e1a9619161",
-                "reference": "3032a26d139a56fc997ce29409a4b4e1a9619161",
+                "url": "https://api.github.com/repos/TonyBogdanov/memoize/zipball/4c26f3dbb3c4e07c67338a9c07a24b305350a83e",
+                "reference": "4c26f3dbb3c4e07c67338a9c07a24b305350a83e",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.0"
+                "php-64bit": "^7.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "TonyBogdanov\\Memoize\\": "src/TonyBogdanov/Memoize/"
+                    "TonyBogdanov\\Memoize\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2670,7 +2673,7 @@
                 }
             ],
             "description": "Object & class-level in-memory caching",
-            "time": "2020-02-26T09:09:48+00:00"
+            "time": "2020-10-08T21:12:20+00:00"
         }
     ],
     "packages-dev": [],
@@ -2680,7 +2683,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.4",
+        "php-64bit": "^7.4",
         "ext-json": "*",
         "ext-intl": "*"
     },
